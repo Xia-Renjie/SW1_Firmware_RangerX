@@ -8,6 +8,14 @@ bool switchModeLock[rowCount][colCount];
 long switchTimer[rowCount][colCount];
 long toggleTimer[rowCount][colCount];
 bool switchMode[rowCount][colCount];
+bool preset1[rowCount][colCount];
+bool preset2[rowCount][colCount];
+bool preset3[rowCount][colCount];
+bool preset4[rowCount][colCount];
+bool preset5[rowCount][colCount];
+bool preset6[rowCount][colCount];
+bool preset7[rowCount][colCount];
+bool preset8[rowCount][colCount];
 
 //Analog variables
 
@@ -19,6 +27,22 @@ long analogTimer2[4];
 int8_t analogRotaryCount[4];
 int8_t analogSwitchMode1[4];
 int8_t analogSwitchMode2[4];
+int8_t analogMode1Preset1[4];
+int8_t analogMode1Preset2[4];
+int8_t analogMode1Preset3[4];
+int8_t analogMode1Preset4[4];
+int8_t analogMode1Preset5[4];
+int8_t analogMode1Preset6[4];
+int8_t analogMode1Preset7[4];
+int8_t analogMode1Preset8[4];
+int8_t analogMode2Preset1[4];
+int8_t analogMode2Preset2[4];
+int8_t analogMode2Preset3[4];
+int8_t analogMode2Preset4[4];
+int8_t analogMode2Preset5[4];
+int8_t analogMode2Preset6[4];
+int8_t analogMode2Preset7[4];
+int8_t analogMode2Preset8[4];
 
 #define clutchTopDeadzone 10
 #define clutchBottomDeadzone 10
