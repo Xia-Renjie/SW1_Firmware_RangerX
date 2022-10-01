@@ -2,13 +2,13 @@ void presets(int8_t presetNumber)
 {
     int8_t PresetNumber = presetNumber;
 
-    //Clear all buttons
+    //清除所有按钮状态
     for (int i = 0; i < BUTTONCOUNT; i++)
     {
         Joystick.setButton(i, 0);
     }
 
-    //Clear all switch modes
+    //清除所有按钮模式
     for (int i = 0; i < rowCount; i++)
     {
         for (int a = 0; a < colCount; a++)
@@ -22,7 +22,7 @@ void presets(int8_t presetNumber)
         analogSwitchMode2[i] = 0;
     }
 
-    //Default values set
+    //设定默认值
 
     bitePoint = 300;
     brakeMagicValue = 50;
@@ -31,42 +31,42 @@ void presets(int8_t presetNumber)
     rightQuickValue = 11;
 
     //----------------------------------------
-    //-----BUILD YOUR PRESETS HERE------------
+    //------------在下方输入预设值-------------
     //----------------------------------------
 
     switch (presetNumber)
     {
-        case 0: //PRESET 1 - iRacing PORSCHE 911 CUP CAR
+        case 0: //预设 1 - iRacing PORSCHE 911 CUP CAR
             switchMode[5][2] = 1;
             switchMode[6][1] = 1;
             bitePoint = 265;
             brakeMagicValue = 200;
             break;
-        case 1: //PRESET 2 - iRacing PORSCHE 911 GT3
+        case 1: //预设 2 - iRacing PORSCHE 911 GT3
             bitePoint = 300;
             break;
-        case 2: //PRESET 3 - iRacing FERRARI 488 GT3
+        case 2: //预设 3 - iRacing FERRARI 488 GT3
             bitePoint = 500;
             break;
-        case 3: //PRESET 4 - iRacing MERCEDES AMG GT3
+        case 3: //预设 4 - iRacing MERCEDES AMG GT3
             bitePoint = 200;
             switchMode[4][2] = 1;
             break;
-        case 4: //PRESET 5 - iRacing F3
+        case 4: //预设 5 - iRacing F3
             break;
-        case 5: //PRESET 6 - iRacing F4
+        case 5: //预设 6 - iRacing F4
             break;
-        case 6: //PRESET 7 - iRacing MERCEDES W12
+        case 6: //预设 7 - iRacing MERCEDES W12
             break;
-        case 7: //PRESET 8 - iRacing RADICAL SR10
+        case 7: //预设 8 - iRacing RADICAL SR10
             break;
-        case 8: //PRESET 9 - ACC MERCEDES AMG GT3
+        case 8: //预设 9 - ACC MERCEDES AMG GT3
             break;
-        case 9: //PRESET 10 - ACC LAMBORGHINI HURACAN
+        case 9: //预设 10 - ACC LAMBORGHINI HURACAN
             break;
-        case 10: //PRESET 11 - ACC FERRARI 488 GT3
+        case 10: //预设 11 - ACC FERRARI 488 GT3
             break;
-        case 11: //PRESET 12 - F1 2022
+        case 11: //预设 12 - F1 2022
             break;
     }
 }
