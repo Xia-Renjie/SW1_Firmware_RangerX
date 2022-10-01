@@ -1,20 +1,20 @@
 #include <Joystick.h>
 
 
-#define BUTTONCOUNT 93
+#define BUTTONCOUNT 93  //定义按钮编号总数93
 //Defining joystick parameters
 
-Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID, JOYSTICK_TYPE_JOYSTICK,
-    BUTTONCOUNT,    //Button count
-    0,              //Hat switch count
-    true,          //X axis, used for clutch
-    true,          //Y axis, used for button mode field
-    true,          //Z axis, used for encoder mode field
-    false,         //Rx axis 
-    true,          //Ry axis, used for bite point posting
-    false,         //Rz axis 
-    false,         //Rudder
-    true,          //Throttle, used for dual clutch mode 4
-    false,         //Accelerator
-    true,          //Brake, used for dual clutch mode 4
-    false);        //Steering
+Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID, JOYSTICK_TYPE_JOYSTICK,  //定义控制器
+    BUTTONCOUNT,    //按钮总数
+    0,              //苦力帽数量
+    true,          //X轴，用于离合
+    true,          //Y轴，用于按钮模拟
+    true,          //Z轴，用于编码器模拟
+    false,         //Rx轴，未启用 
+    true,          //Ry轴，用于设定咬合点
+    false,         //Rz轴，未启用 
+    false,         //脚舵，未启用
+    true,          //油门轴，用于双离合模式4
+    false,         //加速器轴，未启用
+    true,          //刹车轴，用于双离合模式
+    false);        //转向轴，未启用

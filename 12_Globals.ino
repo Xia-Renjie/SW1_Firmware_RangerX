@@ -1,58 +1,58 @@
-//------------------------------
-//--------OTHER VARIABLES-------
-//------------------------------
+//---------------------------
+//---------其它变量----------
+//---------------------------
 
-//Handbrake
-bool handbrake = false;
-bool handbrakeLock = false;
-bool handbrakeRelease = false;
-long handbrakeTimer = 0;
+//手刹
+bool handbrake = false;  //默认未启用
+bool handbrakeLock = false;  //手刹锁定，默认未启用
+bool handbrakeRelease = false;  //手刹释放，默认未启用
+long handbrakeTimer = 0;  //手刹计时器
 
-bool brakeMagicOn;
-float brakeMagicValue; 
-float throttleHoldValue; 
-float bitePoint;
-uint8_t leftQuickValue;
-uint8_t rightQuickValue;
-bool quickSwitchState;
+bool brakeMagicOn;  //魔法刹车启用
+float brakeMagicValue;  //魔法刹车值
+float throttleHoldValue;  //油门保持值
+float bitePoint;  //咬合点值
+uint8_t leftQuickValue;  //左快速切换预设值
+uint8_t rightQuickValue;  //右快速切换预设值
+bool quickSwitchState;  //快速切换状态
 
-//Function buttons
-int8_t hybridButtonRow;
-int8_t hybridButtonCol;
-int8_t modButtonRow;
-int8_t modButtonCol;
-int8_t ddButtonRow;
-int8_t ddButtonCol;
-int8_t neutralButtonRow;
-int8_t neutralButtonCol;
-int8_t biteButtonRow;
-int8_t biteButtonCol;
-int8_t presetButtonRow;
-int8_t presetButtonCol;
+//功能按钮
+int8_t hybridButtonRow;  //混合按钮行编号
+int8_t hybridButtonCol;  //混合按钮列编号
+int8_t modButtonRow;  //调整按钮行编号
+int8_t modButtonCol;  //调整按钮列编号
+int8_t ddButtonRow;  //DD按钮行编号
+int8_t ddButtonCol;  //DD按钮列编号
+int8_t neutralButtonRow;  //空挡按钮行编号
+int8_t neutralButtonCol;  //空挡按钮列编号
+int8_t biteButtonRow;  //咬合点按钮行编号
+int8_t biteButtonCol;  //咬合点按钮列编号
+int8_t presetButtonRow;  //预设按钮行编号
+int8_t presetButtonCol;  //预设按钮列编号
 
-bool biteButtonBit1 = false;
-bool biteButtonBit2 = false;
+bool biteButtonBit1 = false;  //咬合点值1，默认不启用
+bool biteButtonBit2 = false;  //咬合点值2，默认不启用
 uint8_t first = 0;
 uint8_t second = 0;
 
-int8_t switchPreset = 0;
-bool bootPreset = true;
+int8_t switchPreset = 0;  //开关预设，默认为0
+bool bootPreset = true;  //启动预设，默认启用
 
-//Clock and counter
-unsigned long globalClock;
+//时钟与计数器
+unsigned long globalClock;  //全局时钟
 
-//Debouncing
-#define buttonCooldown 25
-#define analogWait 50
-#define analogPulse 100
-#define encoderWait 5
-#define encoderPulse 50
-#define encoder2Wait 2
-#define encoder2Pulse 50
-#define encoderCooldown 0
-#define togglePulse 50
-#define funkyPulse 60
-#define funkyCooldown 70
+//去抖动
+#define buttonCooldown 25  //按钮冷却时间25ms
+#define analogWait 50  //模拟量等待间隔50ms
+#define analogPulse 100  //模拟脉冲时长100ms
+#define encoderWait 5  //编码器等待间隔5ms
+#define encoderPulse 50  //编码器脉冲时长50ms
+#define encoder2Wait 2  //编码器2等待间隔2ms
+#define encoder2Pulse 50  //编码器2脉冲时长50ms
+#define encoderCooldown 0  //编码器冷却时间0ms
+#define togglePulse 50  //拨档开关脉冲时长50ms
+#define funkyPulse 60  //摇杆开关脉冲时长60ms
+#define funkyCooldown 70  //摇杆开关冷却时间70ms
 
 
 

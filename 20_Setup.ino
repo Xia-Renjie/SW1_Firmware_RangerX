@@ -1,16 +1,16 @@
 //------------------------------
-//-----------SETUP--------------
+//---------初始化设置------------
 //------------------------------
 
 void setup()
 {
-    //Set up joystick axis
+    //设置控制器轴
     Joystick.setXAxisRange(0, 1000);
     Joystick.setThrottleRange(0, 1000);
     Joystick.setBrakeRange(0, 1000);
 
 
-    //Filling some arrays
+    //填充矩阵与数组
     for (int i = 0; i < rowCount; i++)
     {
         for (int a = 0; a < colCount; a++)
@@ -43,21 +43,21 @@ void setup()
         }
     }
 
-    //Ready the matrix
+    //初始化按钮矩阵
 
     for (int i = 0; i < colCount; i++)
-    { //  All pins pulled up unless told otherwise
+    { //所有针脚默认为断开状态，除非另行说明
         pinMode(col[i], INPUT_PULLUP);
     }
 
     for (int i = 0; i < rowCount; i++)
-    { //  All pins pulled up unless told otherwise
+    { //所有针脚默认为断开状态，除非另行说明
         pinMode(row[i], INPUT_PULLUP);
     }
 
-    Joystick.begin(0); //Start joystick library magic
+    Joystick.begin(0); //启用Joystick库
 
-    Joystick.setZAxisRange(-32768, 32767); //Making bit fields 16 bit
+    Joystick.setZAxisRange(-32768, 32767);  //设置轴为16位精度
     Joystick.setYAxisRange(-32768, 32767);
 
 }

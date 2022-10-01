@@ -1,15 +1,15 @@
 int encoderField = 0;
 
 /*
- * Encoder field, linked to switchModes[row][col], pushed to joysick axis Z
+ * 编码器位字段，值连接到switchModes[row][col], 推送给Z轴
 
- Most significant
- 16 - DDS switch
- 15 - DDS switch
- 14 - Dual clutches
- 13 - Dual clutches
- 12 - Bite point setting
- 11 - Bite point setting
+ 最常用
+ 16 - DDS模式开关
+ 15 - DDS模式开关
+ 14 - 双离合
+ 13 - 双离合
+ 12 - 咬合点设定
+ 11 - 咬合点设定
  10
  9
  8
@@ -18,34 +18,34 @@ int encoderField = 0;
  5
  4
  3
- 2 - Quick switch mode
- 1 - Handbrake active
- Least significant
+ 2 - 快速切换开关模式
+ 1 - 手刹激活
+ 最不常用
 
  */
 
 int buttonField = 0;
 
 /*
- * Button field, linked to switchModes[row][col], pushed to joysick axis Y
+ * 按钮位字段，值连接到switchModes[row][col], 推送给Y轴
 
- Most significant
- 16 - Neutral active
- 15 - Neutral mode
- 14 - Presets 4rd bit
- 13 - Presets 3nd bit
- 12 - Presets 2st bit
- 11 - Presets 1st bit
- 10 - Magic active
- 9 - Throttle hold active
- 8 - Quick switch active
- 7 - Shifters mode
- 6 - Left top toggle mode
- 5 - Right top toggle mode
- 4 - Magic toggle mode
- 3 - Left rotary mode
- 2 - Right rotary mode
- 1 - Radio button mode
- Least significant
+ 最常用
+ 16 - 空挡激活
+ 15 - 空挡模式
+ 14 - 预设第4位值
+ 13 - 预设第3位值
+ 12 - 预设第2位值
+ 11 - 预设第1位值
+ 10 - 魔法刹车激活
+ 9 - 油门保持激活
+ 8 - 快速切换激活
+ 7 - 换挡拨片模式
+ 6 - 左上拨档开关模式
+ 5 - 右上拨档开关模式
+ 4 - 魔法刹车拨档开关模式
+ 3 - 左旋转开关模式
+ 2 - 右旋转开关模式
+ 1 - 无线电按钮模式
+ 最不常用
 
  */
