@@ -2,9 +2,9 @@
 
 
 #define BUTTONCOUNT 93  //定义按钮编号总数93
-//Defining joystick parameters
 
-Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID, JOYSTICK_TYPE_JOYSTICK,  //定义控制器
+//定义Joystick函数参数
+Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID, JOYSTICK_TYPE_JOYSTICK,
     BUTTONCOUNT,    //按钮总数
     0,              //苦力帽数量
     true,          //X轴，用于离合

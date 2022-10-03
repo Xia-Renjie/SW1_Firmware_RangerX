@@ -2,9 +2,9 @@
 
 int8_t rawState[rowCount][colCount];  //按钮原始状态
 int8_t pushState[rowCount][colCount];  //按钮按下状态
-bool latchLock[rowCount][colCount];  //按钮锁定状态
+bool latchLock[rowCount][colCount];  //自锁按钮锁
 bool latchState[rowCount][colCount];  //自锁按钮状态
-bool switchModeLock[rowCount][colCount];  //开关模式锁定状态
+bool switchModeLock[rowCount][colCount];  //开关模式锁
 long switchTimer[rowCount][colCount];  //开关计时器
 long toggleTimer[rowCount][colCount];  //拨档开关计时器
 bool switchMode[rowCount][colCount];  //开关模式

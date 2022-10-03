@@ -44,7 +44,7 @@ void loop()
 
     //特殊开关
 
-    modButton(1, 7);  //调整按钮B5
+    modButton(1, 7);  //模式调整按钮B5
     neutralButton(4, 5);  //空挡按钮B18
     biteButton(1, 5);  //咬合点按钮B3
     presetButton(1, 6);  //预设按钮B4

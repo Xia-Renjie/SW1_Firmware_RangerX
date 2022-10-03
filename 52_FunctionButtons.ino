@@ -1,6 +1,8 @@
+//-------------------------------
+//----------特殊功能按钮----------
+//-------------------------------
 
-
-//MODIFIER BUTTON
+//模式调整按钮
 
 void modButton(int row, int column)
 {
@@ -11,6 +13,7 @@ void modButton(int row, int column)
     int Column = column - 1;
     int Number = buttonNumber[Row][Column];
 
+    //状态更新函数与pushButton()相同
     if (pushState[Row][Column] != rawState[Row][Column] && (globalClock - switchTimer[Row][Column]) > buttonCooldown)
     {
         switchTimer[Row][Column] = globalClock;
@@ -24,6 +27,8 @@ void modButton(int row, int column)
 
     Joystick.setButton(Number, pushState[Row][Column]);
 }
+
+//预设按钮
 
 void presetButton(int row, int column)
 {
@@ -34,6 +39,7 @@ void presetButton(int row, int column)
     int Column = column - 1;
     int Number = buttonNumber[Row][Column];
 
+    //状态更新函数与pushButton()相同
     if (pushState[Row][Column] != rawState[Row][Column] && (globalClock - switchTimer[Row][Column]) > buttonCooldown)
     {
         switchTimer[Row][Column] = globalClock;
@@ -48,9 +54,7 @@ void presetButton(int row, int column)
     Joystick.setButton(Number, pushState[Row][Column]);
 }
 
-
-//HYBRID and DDBUTTON.
-
+//混合按钮和DD按钮
 
 void hybridButton(int row, int column)
 {
@@ -60,6 +64,7 @@ void hybridButton(int row, int column)
     int Row = row - 1;
     int Column = column - 1;
 
+    //状态更新函数与pushButtonL()相同，但不需要按钮编号
     if (pushState[Row][Column] != rawState[Row][Column] && (globalClock - switchTimer[Row][Column]) > buttonCooldown)
     {
         switchTimer[Row][Column] = globalClock;
@@ -91,6 +96,7 @@ void DDButton(int row, int column)
     int Row = row - 1;
     int Column = column - 1;
 
+    //状态更新函数与pushButtonL()相同，但不需要按钮编号
     if (pushState[Row][Column] != rawState[Row][Column] && (globalClock - switchTimer[Row][Column]) > buttonCooldown)
     {
         switchTimer[Row][Column] = globalClock;
@@ -114,6 +120,8 @@ void DDButton(int row, int column)
     }
 }
 
+//空挡按钮
+
 void neutralButton(int row, int column)
 {
     neutralButtonRow = row;
@@ -125,6 +133,7 @@ void neutralButton(int row, int column)
     int FieldPlacement = 15;
     int ActivePlacement = 16;
 
+    //一般模式下状态更新函数与pushButton()功能相同
     if (pushState[Row][Column] != rawState[Row][Column] && (globalClock - switchTimer[Row][Column]) > buttonCooldown)
     {
         switchTimer[Row][Column] = globalClock;
@@ -136,7 +145,7 @@ void neutralButton(int row, int column)
         pushState[Row][Column] = rawState[Row][Column];
     }
 
-    //Change switch mode
+    //改变开关模式，与pushButtonM()相同
     if (pushState[Row][Column] == 0)
     {
         switchModeLock[Row][Column] = false;
@@ -150,19 +159,19 @@ void neutralButton(int row, int column)
         latchState[Row][Column] = false;
     }
 
-    //Push switch mode
+    //推送按钮模式的值给按钮位字段，与pushButtonM()相同
     long push = 0;
     push = push | switchMode[Row][Column];
     push = push << (FieldPlacement - 1);
     buttonField = buttonField | push;
 
-    //SWITCH MODE 2: MOMENTARY BUTTON
+    //开关模式2：自复位按钮
     if (switchMode[Row][Column])
     {
         Joystick.setButton(Number, pushState[Row][Column]);
     }
 
-    //SWITCH MODE 1: LATCHING NEUTRAL BuTTON
+    //开关模式1：自锁空挡按钮（默认状态）
     else if (!switchMode[Row][Column])
     {
         if (pushState[Row][Column] == 0)
@@ -176,7 +185,7 @@ void neutralButton(int row, int column)
             latchState[Row][Column] = !latchState[Row][Column];
         }
 
-        //Push neutral active
+        //推送空挡激活状态的值给按钮位字段
         long push = 0;
         push = push | latchState[Row][Column];
         push = push << (ActivePlacement - 1);
@@ -184,9 +193,11 @@ void neutralButton(int row, int column)
     }
 }
 
+//咬合点按钮
+
 void biteButton(int row, int column)
 {
-    Joystick.setRyAxisRange(0, 1000);
+    Joystick.setRyAxisRange(0, 1000);  //先将离合设定为0-100%
 
     biteButtonRow = row;
     biteButtonCol = column;
@@ -196,6 +207,7 @@ void biteButton(int row, int column)
     int Number = buttonNumber[Row][Column];
     int FieldPlacement = 6;
 
+    //一般模式下状态更新函数与pushButton()功能相同
     if (pushState[Row][Column] != rawState[Row][Column] && (globalClock - switchTimer[Row][Column]) > buttonCooldown)
     {
         switchTimer[Row][Column] = globalClock;
@@ -207,13 +219,13 @@ void biteButton(int row, int column)
         pushState[Row][Column] = rawState[Row][Column];
     }
 
-    //Scrolling through bite point setting
+    //改变两个咬合点设定位字段的状态
     if (!pushState[Row][Column])
     {
-        latchLock[Row][Column] = true;
+        latchLock[Row][Column] = true;  //未按下时，保持开关状态锁定
     }
 
-    if (pushState[Row][Column] && latchLock[Row][Column])
+    if (pushState[Row][Column] && latchLock[Row][Column])  //按钮按下时，改变两个咬合点设定位字段的状态
     {
         latchLock[Row][Column] = false;
         if (biteButtonBit1 && !biteButtonBit2)
@@ -231,13 +243,13 @@ void biteButton(int row, int column)
             biteButtonBit1 = false;
         }
     }
-    //Push bite setting level
+    //推送咬合点设定位字段值(字段用法详见咬合点编码器函数)
     long push = 0;
     push = push | biteButtonBit1;
     push = push | (biteButtonBit2 << 1);
     push = push << (2 * (FieldPlacement - 1));
     encoderField = encoderField | push;
 
-    Joystick.setRyAxis(bitePoint);
-    Joystick.setButton(Number, pushState[Row][Column]);
+    Joystick.setRyAxis(bitePoint);  //将咬合点设定编码器的值传递给咬合点轴
+    Joystick.setButton(Number, pushState[Row][Column]);  //传递按钮按下状态
 }

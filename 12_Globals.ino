@@ -19,8 +19,8 @@ bool quickSwitchState;  //快速切换状态
 //功能按钮
 int8_t hybridButtonRow;  //混合按钮行编号
 int8_t hybridButtonCol;  //混合按钮列编号
-int8_t modButtonRow;  //调整按钮行编号
-int8_t modButtonCol;  //调整按钮列编号
+int8_t modButtonRow;  //模式调整按钮行编号
+int8_t modButtonCol;  //模式调整按钮列编号
 int8_t ddButtonRow;  //DD按钮行编号
 int8_t ddButtonCol;  //DD按钮列编号
 int8_t neutralButtonRow;  //空挡按钮行编号
