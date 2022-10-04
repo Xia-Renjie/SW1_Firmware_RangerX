@@ -44,8 +44,6 @@ int8_t analogMode2Preset6[4];  //模拟模式2预设6
 int8_t analogMode2Preset7[4];  //模拟模式2预设7
 int8_t analogMode2Preset8[4];  //模拟模式2预设8
 
-#define clutchTopDeadzone 10  //离合顶端死区10
-#define clutchBottomDeadzone 10  //离合底部死区10
 
 //模拟信号平滑处理
 

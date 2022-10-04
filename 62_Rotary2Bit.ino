@@ -1,8 +1,9 @@
 //------------------------------
-//------ROTARY 2-BIT SWITCH-----
+//---------2位旋转编码器---------
 //------------------------------
 
-void rotary2Modes(int row, int column, int fieldPlacement, int hybridPositions, bool reverse)
+//4模式2位编码器
+void rotary2Modes(int row, int column, int fieldPlacement, int hybridPositions, bool reverse)  //参数为行、列号，编码器字段号，混合模式档位数，是否反向旋转
 {
     int Row = row - 1;
     int Column = column - 1;
@@ -12,7 +13,7 @@ void rotary2Modes(int row, int column, int fieldPlacement, int hybridPositions, 
     int Reverse = reverse;
     int maxPos = max(4, HyPos);
 
-    //Find switch absolute position
+    //找到编码器绝对位置
 
     bool Pin1 = rawState[Row][Column];
     bool Pin2 = rawState[Row][Column + 1];
@@ -31,60 +32,60 @@ void rotary2Modes(int row, int column, int fieldPlacement, int hybridPositions, 
 
     pos = pos ^ (pos >> 1);
 
-    int result = pos;
+    int result = pos;  //将两个针脚读数转换为编号0-3（00-11）的档位
 
-    //Short debouncer on switch rotation
+    //旋转过程中去抖动
 
-    if (pushState[Row][Column] != result)
+    if (pushState[Row][Column] != result)  //旋转开关功能相当于每一档都是一个脉冲模式开关
     {
         if (globalClock - switchTimer[Row][Column] > (encoder2Wait + encoder2Pulse + encoderCooldown))
         {
             switchTimer[Row][Column] = globalClock;
-            latchLock[Row][Column] = true;
+            latchLock[Row][Column] = true;  //刷新时间到后，更新计时器，不改变开关状态
         }
         else if ((globalClock - switchTimer[Row][Column] > encoder2Wait) && latchLock[Row][Column])
         {
-            //Engage encoder pulse timer
+            //激活编码器脉冲计时器
             switchTimer[Row][Column + 1] = globalClock;
 
-            //Update difference, storing the value in pushState on pin 2
+            //将档位与初始的差值暂存到2号针脚
             pushState[Row][Column + 1] = result - pushState[Row][Column];
 
-            //Give new value to pushState
+            //更新档位状态
             pushState[Row][Column] = result;
 
-
-            //Make sure we dont do this again
+            //解锁自锁开关锁，防止出现连击
             latchLock[Row][Column] = false;
+
             //----------------------------------------------
-            //----------------MODE CHANGE-------------------
+            //-------------------模式切换-------------------
             //----------------------------------------------
 
-            //Due to placement of this scope, mode change will only occur on switch rotation.
+            //因为占位符的存在，模式切换仅在编码器旋转时才会生效
 
             if (pushState[modButtonRow - 1][modButtonCol - 1] == 1)
             {
-                for (int i = 0; i < maxPos + 1; i++) //Remove the remnants from SWITCH MODE 1
+                for (int i = 0; i < maxPos + 1; i++)  //清除模式1下的按钮状态
                 {
                     Joystick.releaseButton(i - 1 + Number);
                 }
 
-                if (switchMode[Row][Column] && switchMode[Row][Column + 1]) //EXIT from switch mode 4
+                if (switchMode[Row][Column] && switchMode[Row][Column + 1]) //退出模式4
                 {
                     switchMode[Row][Column + 1] = false;
                     switchMode[Row][Column] = false;
                 }
-                else //Rotate between switch modes 1-3
+                else //在模式1-3之间切换
                 {
-                    switchMode[Row][Column] = !switchMode[Row][Column];
-                    if (!switchMode[Row][Column]) //Moving into hybrid mode, set hybrid button to 0
+                    switchMode[Row][Column] = !switchMode[Row][Column];  //当前为模式1时切换到模式2
+                    if (!switchMode[Row][Column]) //模式2时切换成模式3，将混合按钮锁定状态设置为0
                     {
                         switchMode[Row][Column + 1] = true;
                         latchState[hybridButtonRow - 1][hybridButtonCol - 1] = 0;
                     }
                     else
                     {
-                        if (switchMode[Row][Column + 1])
+                        if (switchMode[Row][Column + 1])  //从模式3跳过模式4，切换到模式1
                         {
                             switchMode[Row][Column + 1] = false;
                             switchMode[Row][Column] = false;
@@ -93,25 +94,25 @@ void rotary2Modes(int row, int column, int fieldPlacement, int hybridPositions, 
                 }
             }
 
-            //If we're in open hybrid, change counter
+            //如果处于模式3，更新计数器
             if (!switchMode[Row][Column] && switchMode[Row][Column + 1])
             {
                 int8_t difference = pushState[Row][Column + 1];
-                if ((difference > 0 && difference < 2) || difference < -2)
+                if ((difference > 0 && difference < 2) || difference < -2)  //顺时针旋转时计数器+1（reverse为1则为-1）
                 {
                     toggleTimer[Row][Column] = toggleTimer[Row][Column] + 1 - (2 * Reverse);
                 }
-                else if ((difference < 0 && difference > -2) || difference > 2)
+                else  //逆时针旋转时计数器-1（reverse为1则为+1）
                 {
                     toggleTimer[Row][Column] = toggleTimer[Row][Column] - 1 + (2 * Reverse);
                 }
-                if (toggleTimer[Row][Column] < 0)
+                if (toggleTimer[Row][Column] < 0)  //计数器小于0时，从最高档位重新开始计数
                 {
-                    toggleTimer[Row][Column] = HyPos;
+                    toggleTimer[Row][Column] = HyPos - 1;
                 }
             }
 
-            //If we're not in hybrid at all, reset counter
+            //如果不在混合模式，将计数器清零
             else if (!switchMode[Row][Column + 1])
             {
                 toggleTimer[Row][Column] = 0;
@@ -119,21 +120,21 @@ void rotary2Modes(int row, int column, int fieldPlacement, int hybridPositions, 
         }
     }
 
-    //If we're in hybrid, able to set open/closed hybrid
+    //处于混合模式时，允许切换开放式和封闭式
     if (switchMode[Row][Column + 1])
     {
-        switchMode[Row][Column] = latchState[hybridButtonRow - 1][hybridButtonCol - 1];
+        switchMode[Row][Column] = latchState[hybridButtonRow - 1][hybridButtonCol - 1];  //通过hybridButton来切换
     }
 
-    //SWITCH MODE 1: 4 - position switch
+    //开关模式1：4档开关
 
     if (!switchMode[Row][Column] && !switchMode[Row][Column + 1])
     {
-        pushState[Row][Column + 1] = 0; //Refreshing encoder mode difference
+        pushState[Row][Column + 1] = 0; //清除暂存的差值
 
         for (int i = 0; i < 5; i++)
         {
-            if (i == pushState[Row][Column])
+            if (i == pushState[Row][Column])  //按下对应按钮并释放其它按钮
             {
                 Joystick.pressButton(i + Number);
             }
@@ -144,32 +145,32 @@ void rotary2Modes(int row, int column, int fieldPlacement, int hybridPositions, 
         }
     }
 
-    //SWITCH MODE 2/4: Incremental encoder or closed hybrid
+    //开关模式2和4：增量编码器和封闭式混合模式旋钮
 
     else if (switchMode[Row][Column])
     {
         Number = buttonNumber[Row][Column + 1];
         int8_t difference = pushState[Row][Column + 1];
-        if (difference != 0)
+        if (difference != 0)  //暂存差值不为0时（即两个针脚状态有差别时）
         {
             if (globalClock - switchTimer[Row][Column + 1] < (encoder2Pulse + encoder2Wait))
             {
-                if ((difference > 0 && difference < 2) || difference < -2)
+                if ((difference > 0 && difference < 2) || difference < -2)  //顺时针旋转时触发+1（reverse为1则为-1）
                 {
                     Joystick.setButton(Number + Reverse, 1);
                     Joystick.setButton(Number + 1 - Reverse, 0);
                 }
-                else if ((difference < 0 && difference > -2) || difference > 2)
+                else  //逆时针旋转时触发-1（reverse为1则为+1）
                 {
                     Joystick.setButton(Number + Reverse, 0);
                     Joystick.setButton(Number + 1 - Reverse, 1);
                 }
                 else
                 {
-                    pushState[Row][Column + 1] = 0;
+                    pushState[Row][Column + 1] = 0;  //清空暂存的差值
                 }
             }
-            else
+            else  //刷新时间到后，更新开关状态
             {
                 pushState[Row][Column + 1] = 0;
                 pushState[Row][Column] = result;
@@ -179,11 +180,11 @@ void rotary2Modes(int row, int column, int fieldPlacement, int hybridPositions, 
         }
     }
 
-    //SWITCH MODE 3: OPEN HYBRID
+    //开关模式3：开放式混合模式旋钮
     if (!switchMode[Row][Column] && switchMode[Row][Column + 1])
     {
 
-        for (int i = 1; i < HyPos + 1; i++)
+        for (int i = 1; i < HyPos + 1; i++)  //按下对应档位的按钮，释放其它按钮
         {
             int e = toggleTimer[Row][Column] % HyPos;
             if (e == 0)
@@ -201,7 +202,7 @@ void rotary2Modes(int row, int column, int fieldPlacement, int hybridPositions, 
         }
     }
 
-    //Push switch mode
+    //传递模式值给编码器位字段
     long push = 0;
     push = push | switchMode[Row][Column];
     push = push | (switchMode[Row][Column + 1] << 1);
@@ -209,19 +210,18 @@ void rotary2Modes(int row, int column, int fieldPlacement, int hybridPositions, 
     encoderField = encoderField | push;
 }
 
-
-void rotary2Inc(int row, int column, bool reverse)
+//一般2位增量编码器
+void rotary2Inc(int row, int column, bool reverse)  //参数为行、列号，是否反向旋转
 {
     int Row = row - 1;
     int Column = column - 1;
     int Number = buttonNumber[Row][Column];
     int Reverse = reverse;
 
-    //Find switch absolute position
+    //找到编码器绝对位置
 
     bool Pin1 = rawState[Row][Column];
     bool Pin2 = rawState[Row][Column + 1];
-
 
     bool array[2] = { Pin1, Pin2 };
 
@@ -239,7 +239,7 @@ void rotary2Inc(int row, int column, bool reverse)
 
     int result = pos;
 
-    //Short debouncer on switch rotation
+    //旋转过程中去抖动
 
     if (pushState[Row][Column] != result)
     {
@@ -250,16 +250,12 @@ void rotary2Inc(int row, int column, bool reverse)
         }
         else if ((globalClock - switchTimer[Row][Column] > encoder2Wait) && latchLock[Row][Column])
         {
-            //Engage encoder pulse timer
             switchTimer[Row][Column + 1] = globalClock;
 
-            //Update difference, storing the value in pushState on pin 2
             pushState[Row][Column + 1] = result - pushState[Row][Column];
 
-            //Give new value to pushState
             pushState[Row][Column] = result;
 
-            //Make sure we dont do this again
             latchLock[Row][Column] = false;
         }
     }
@@ -294,9 +290,8 @@ void rotary2Inc(int row, int column, bool reverse)
     }
 }
 
-
-
-void rotary2Multi(int row, int column, int positions, bool reverse)
+//计数式多档位旋钮
+void rotary2Multi(int row, int column, int positions, bool reverse)  //参数为行、列号，自定义档位数，是否反向旋转
 {
     int Row = row - 1;
     int Column = column - 1;
@@ -304,7 +299,7 @@ void rotary2Multi(int row, int column, int positions, bool reverse)
     int Pos = positions;
     int Reverse = reverse;
 
-    //Find switch absolute position
+    //找到编码器绝对位置
 
     bool Pin1 = rawState[Row][Column];
     bool Pin2 = rawState[Row][Column + 1];
@@ -325,7 +320,7 @@ void rotary2Multi(int row, int column, int positions, bool reverse)
 
     int result = pos;
 
-    //Short debouncer on switch rotation
+    //旋转过程中去抖动
 
     if (pushState[Row][Column] != result)
     {
@@ -336,18 +331,15 @@ void rotary2Multi(int row, int column, int positions, bool reverse)
         }
         else if ((globalClock - switchTimer[Row][Column] > encoder2Wait) && latchLock[Row][Column])
         {
-            //Engage encoder pulse timer
             switchTimer[Row][Column + 1] = globalClock;
 
-            //Update difference, storing the value in pushState on pin 2
             pushState[Row][Column + 1] = result - pushState[Row][Column];
 
-            //Give new value to pushState
             pushState[Row][Column] = result;
 
-            //Make sure we dont do this again
             latchLock[Row][Column] = false;
 
+            //更新计数器
             int8_t difference = pushState[Row][Column + 1];
             if ((difference > 0 && difference < 2) || difference < -2)
             {
@@ -362,6 +354,7 @@ void rotary2Multi(int row, int column, int positions, bool reverse)
                 toggleTimer[Row][Column] = Pos - 1;
             }
 
+            //触发对应按钮
             for (int i = 0; i < Pos + 1; i++)
             {
                 int e = toggleTimer[Row][Column] % Pos;
@@ -383,8 +376,8 @@ void rotary2Multi(int row, int column, int positions, bool reverse)
 }
 
 
-
-void rotary2Multis(int row, int column, int fieldPlacement, int positions1, int positions2, int positions3, bool reverse)
+//4模式计数式多档位旋钮
+void rotary2Multis(int row, int column, int fieldPlacement, int positions1, int positions2, int positions3, bool reverse)  //参数为行、列号，编码器字段号，3个自定义档位数，是否反向旋转
 {
     int Row = row - 1;
     int Column = column - 1;
@@ -392,7 +385,7 @@ void rotary2Multis(int row, int column, int fieldPlacement, int positions1, int 
     int FieldPlacement = fieldPlacement;
     int Reverse = reverse;
 
-    //Find switch absolute position
+    //找到编码器绝对位置
 
     bool Pin1 = rawState[Row][Column];
     bool Pin2 = rawState[Row][Column + 1];
@@ -415,7 +408,7 @@ void rotary2Multis(int row, int column, int fieldPlacement, int positions1, int 
 
     int result = pos;
 
-    //Short debouncer on switch rotation
+    //旋转过程中去抖动
 
     if (pushState[Row][Column] != result)
     {
@@ -426,52 +419,47 @@ void rotary2Multis(int row, int column, int fieldPlacement, int positions1, int 
         }
         else if ((globalClock - switchTimer[Row][Column] > encoder2Wait) && latchLock[Row][Column])
         {
-            //Engage encoder pulse timer
             switchTimer[Row][Column + 1] = globalClock;
 
-            //Update difference, storing the value in pushState on pin 2
             pushState[Row][Column + 1] = result - pushState[Row][Column];
 
-            //Give new value to pushState
             pushState[Row][Column] = result;
 
-            //Make sure we dont do this again
             latchLock[Row][Column] = false;
 
-
             //----------------------------------------------
-            //----------------MODE CHANGE-------------------
+            //------------------模式切换--------------------
             //----------------------------------------------
 
-            //Due to placement of this scope, mode change will only occur on switch rotation.
-            //If you want to avoid pushing mode, set fieldPlacement to 0.
+            //因为占位符的存在，模式切换仅在编码器旋转时才会生效
+            //如果你不想推送模式值给位字段，就把fieldPlacement设定为0
 
             if (pushState[modButtonRow - 1][modButtonCol - 1] == 1 && FieldPlacement != 0)
             {
-                for (int i = 0; i < maxPos + 1; i++) //Remove the remnants from SWITCH MODE 1
+                for (int i = 0; i < maxPos + 1; i++)  //清除模式1下的按钮状态
                 {
                     Joystick.releaseButton(i - 1 + Number);
                 }
 
-                if (!switchMode[Row][Column] && !switchMode[Row][Column + 1]) //Going to mode 2
+                if (!switchMode[Row][Column] && !switchMode[Row][Column + 1])  //切换到模式2
                 {
                     switchMode[Row][Column + 1] = false;
                     switchMode[Row][Column] = true;
-                    toggleTimer[Row][Column + 1] = positions1; //Using toggle timer pin 2 to store info on how many positionson multi-position switch
+                    toggleTimer[Row][Column + 1] = positions1; //使用针脚2上的计数器来存储自定义档位数
                 }
-                else if (switchMode[Row][Column] && !switchMode[Row][Column + 1]) //Going to mode 3
+                else if (switchMode[Row][Column] && !switchMode[Row][Column + 1])  //切换到模式3
                 {
                     switchMode[Row][Column + 1] = true;
                     switchMode[Row][Column] = false;
                     toggleTimer[Row][Column + 1] = positions2;
                 }
-                else if (!switchMode[Row][Column] && switchMode[Row][Column + 1]) //Going to mode 4
+                else if (!switchMode[Row][Column] && switchMode[Row][Column + 1])  //切换到模式4
                 {
                     switchMode[Row][Column + 1] = true;
                     switchMode[Row][Column] = true;
                     toggleTimer[Row][Column + 1] = positions3;
                 }
-                else if (switchMode[Row][Column] && switchMode[Row][Column + 1]) //Going to mode 1
+                else if (switchMode[Row][Column] && switchMode[Row][Column + 1]) //回到模式1
                 {
                     switchMode[Row][Column + 1] = false;
                     switchMode[Row][Column] = false;
@@ -479,7 +467,7 @@ void rotary2Multis(int row, int column, int fieldPlacement, int positions1, int 
             }
 
 
-            //If we're in pseudomulti, change counter
+            //处于伪多档位模式（即3个自定义档位模式）时，更新计数器
             if (!(!switchMode[Row][Column] && !switchMode[Row][Column + 1]))
             {
                 int8_t difference = pushState[Row][Column + 1];
@@ -493,22 +481,22 @@ void rotary2Multis(int row, int column, int fieldPlacement, int positions1, int 
                 }
                 if (toggleTimer[Row][Column] < 0)
                 {
-                    toggleTimer[Row][Column] = toggleTimer[Row][Column + 1] - 1; //Col pin 4 push state holds info on how many positions on multiposition switch
+                    toggleTimer[Row][Column] = toggleTimer[Row][Column + 1] - 1;
                 }
             }
 
-            //If we're not in multipos at all, reset counter
+            //如果不在多档位模式，重设计数器
             else
             {
                 toggleTimer[Row][Column] = 0;
             }
         }
 
-        //SWITCH MODE 1: 4 - position switch
+        //开关模式1：4档位开关（同rotary2Modes()的模式1）
 
         if (!switchMode[Row][Column] && !switchMode[Row][Column + 1])
         {
-            pushState[Row][Column + 1] = 0; //Refreshing encoder mode difference
+            pushState[Row][Column + 1] = 0;
 
             for (int i = 0; i < 5; i++)
             {
@@ -524,9 +512,9 @@ void rotary2Multis(int row, int column, int fieldPlacement, int positions1, int 
         }
         else
         {
-            //SWITCH MODE 2-4: Multiposititon switches
+            //开关模式2-4：多档位开关（类似rotary2Modes()的模式3）
 
-            for (int i = 0; i < toggleTimer[Row][Column + 1] + 1; i++) //Col pin 4 push state holds info on how many positions on multiposition switch
+            for (int i = 0; i < toggleTimer[Row][Column + 1] + 1; i++)
             {
                 int e = toggleTimer[Row][Column] % toggleTimer[Row][Column + 1];
                 if (e == 0)
@@ -545,7 +533,7 @@ void rotary2Multis(int row, int column, int fieldPlacement, int positions1, int 
         }
     }
 
-    //Push switch mode
+    //推送开关模式值给位字段
     long push = 0;
     push = push | switchMode[Row][Column];
     push = push | (switchMode[Row][Column + 1] << 1);

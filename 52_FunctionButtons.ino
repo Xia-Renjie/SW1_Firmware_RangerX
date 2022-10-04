@@ -225,22 +225,22 @@ void biteButton(int row, int column)
         latchLock[Row][Column] = true;  //未按下时，保持开关状态锁定
     }
 
-    if (pushState[Row][Column] && latchLock[Row][Column])  //按钮按下时，改变两个咬合点设定位字段的状态
+    if (pushState[Row][Column] && latchLock[Row][Column])  //按钮按下时，改变两个咬合点设定位字段的单次量程
     {
         latchLock[Row][Column] = false;
-        if (biteButtonBit1 && !biteButtonBit2)
+        if (biteButtonBit1 && !biteButtonBit2)  //第一次切换
         {
             biteButtonBit2 = true;
             biteButtonBit1 = false;
         }
-        else if (!biteButtonBit1 && biteButtonBit2)
+        else if (!biteButtonBit1 && biteButtonBit2)  //第二次切换
         {
             biteButtonBit1 = true;
         }
-        else if (biteButtonBit1 && biteButtonBit2)
+        else if (biteButtonBit1 && biteButtonBit2)  //第三次切换
         {
             biteButtonBit2 = false;
-            biteButtonBit1 = false;
+            biteButtonBit1 = false;  //切换到状态00，锁定咬合点值
         }
     }
     //推送咬合点设定位字段值(字段用法详见咬合点编码器函数)

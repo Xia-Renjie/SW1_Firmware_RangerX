@@ -50,9 +50,11 @@ unsigned long globalClock;  //全局时钟
 #define encoder2Wait 2  //编码器2等待间隔2ms
 #define encoder2Pulse 50  //编码器2脉冲时长50ms
 #define encoderCooldown 0  //编码器冷却时间0ms
+#define PEC11pulse 50  //PEC11编码器脉冲时长50ms
+#define PEC11Cooldown 50  //PEC11编码器冷却时间50ms
 #define togglePulse 50  //拨档开关脉冲时长50ms
 #define funkyPulse 60  //摇杆开关脉冲时长60ms
 #define funkyCooldown 70  //摇杆开关冷却时间70ms
 
-
-
+#define clutchTopDeadzone 10  //离合顶端死区10
+#define clutchBottomDeadzone 10  //离合底部死区10
