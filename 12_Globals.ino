@@ -3,12 +3,12 @@
 //---------------------------
 
 //手刹
-bool handbrake = false;  //默认未启用
-bool handbrakeLock = false;  //手刹锁定，默认未启用
-bool handbrakeRelease = false;  //手刹释放，默认未启用
+bool handbrake = false;  //手刹状态，默认未启用
+bool handbrakeLock = false;  //手刹锁，默认未启用
+bool handbrakeRelease = false;  //手刹释放锁，默认未启用
 long handbrakeTimer = 0;  //手刹计时器
 
-bool brakeMagicOn;  //魔法刹车启用
+bool brakeMagicOn;  //魔法刹车状态
 float brakeMagicValue;  //魔法刹车值
 float throttleHoldValue;  //油门保持值
 float bitePoint;  //咬合点值
