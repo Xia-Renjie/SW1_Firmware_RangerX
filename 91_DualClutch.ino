@@ -1,8 +1,10 @@
+//双离合函数
 void dualClutch(int masterPin, int masterSwitchNumber, int masterReleasedValue, int masterFullyPressedValue, int slavePin, int slaveSwitchNumber, int slaveReleasedValue, int slaveFullyPressedValue, bool throttleMaster)
+//参数为主拨片模拟针脚、按钮编号、释放时的值、完全按下时的值，从拨片模拟针脚、按钮编号、释放时的值、完全按下时的值，模式4下是否将主拨片模拟为油门
 {
 
     //--------------------------------
-    //---Master paddle calculations----
+    //---------主拨片读数计算----------
     //--------------------------------
 
     int MasterPin = masterPin;
@@ -15,18 +17,18 @@ void dualClutch(int masterPin, int masterSwitchNumber, int masterReleasedValue, 
 
     if (masterFullyPressedValue > masterReleasedValue)
     {
-        masterFullyPressedValue = masterFullyPressedValue - clutchTopDeadzone;
+        masterFullyPressedValue = masterFullyPressedValue - clutchTopDeadzone;  //应用离合器死区
         masterReleasedValue = masterReleasedValue + clutchBottomDeadzone;
         float gap = masterFullyPressedValue - masterReleasedValue;
         float normFactor = 1000 / gap;
-        masterNormalized = normFactor * (masterValue - masterReleasedValue);
+        masterNormalized = normFactor * (masterValue - masterReleasedValue);  //将拨片模拟读书转化为离合器值（0-1000）
         if (masterNormalized < 0)
         {
-            masterNormalized = 0;
+            masterNormalized = 0;  //值不能低于0
         }
     }
 
-    else if (masterFullyPressedValue < masterReleasedValue)
+    else if (masterFullyPressedValue < masterReleasedValue)  //传感器读数方向相反时
     {
         masterFullyPressedValue = masterFullyPressedValue + clutchTopDeadzone;
         masterReleasedValue = masterReleasedValue - clutchBottomDeadzone;
@@ -39,6 +41,7 @@ void dualClutch(int masterPin, int masterSwitchNumber, int masterReleasedValue, 
         }
     }
 
+    //读取4次取平均值来平滑读数
     total[M] = total[M] - readings[M][readIndex[M]];
     readings[M][readIndex[M]] = masterNormalized;
     total[M] = total[M] + readings[M][readIndex[M]];
@@ -56,10 +59,11 @@ void dualClutch(int masterPin, int masterSwitchNumber, int masterReleasedValue, 
         average[M] = 1000;
     }
 
-    //Serial.println(average[M]);
-      //--------------------------------
-      //---Slave paddle calculations----
-      //--------------------------------
+    //Serial.println(average[M]);  //本句用于调试时输出当前读数
+
+    //--------------------------------
+    //---------从拨片读数计算----------
+    //--------------------------------
 
     int SlavePin = slavePin;
     int slaveValue = analogRead(SlavePin);
@@ -93,9 +97,6 @@ void dualClutch(int masterPin, int masterSwitchNumber, int masterReleasedValue, 
     }
 
 
-    //Serial.println(slaveNormalized);
-
-
     total[S] = total[S] - readings[S][readIndex[S]];
     readings[S][readIndex[S]] = slaveNormalized;
     total[S] = total[S] + readings[S][readIndex[S]];
@@ -112,22 +113,23 @@ void dualClutch(int masterPin, int masterSwitchNumber, int masterReleasedValue, 
     {
         average[S] = 1000;
     }
-
+    
+    //Serial.println(slaveNormalized);  //本句用于调试时输出当前读数
 
     //------------------------
-    //------MODE CHANGE-------
+    //--------模式切换--------
     //------------------------
     int maxValue = max(average[S], average[M]);
 
     if (maxValue == 0)
     {
-        analogLatchLock[M] = true;
+        analogLatchLock[M] = true;  //两个离合读数全部为0时不允许切换
     }
 
     if (maxValue == 1000 && analogLatchLock[M])
     {
-        analogLatchLock[M] = false;
-        if (pushState[modButtonRow - 1][modButtonCol - 1] == 1) //Changig clutch modes
+        analogLatchLock[M] = false;  //完全按下其中一个离合后允许切换
+        if (pushState[modButtonRow - 1][modButtonCol - 1] == 1) //使用模式切换按钮来切换
         {
             if (!analogSwitchMode1[M] && !analogSwitchMode2[M])
             {
@@ -163,35 +165,35 @@ void dualClutch(int masterPin, int masterSwitchNumber, int masterReleasedValue, 
     }
 
     //------------------------
-    //------CLUTCH MODES------
+    //--------离合模式--------
     //------------------------
 
-    //MODE 1: STATIC
+    //模式1：静态模式，从拨片最大值为咬合点
     if (!analogSwitchMode1[M] && !analogSwitchMode2[M])
     {
         average[S] = average[S] * bitePoint / 1000;
         Joystick.setXAxis(max(average[S], average[M]));
     }
-    //MODE 2: DYNAMIC LOW
+    //模式2：动态低模式，单个拨片只能达到咬合点，一起按下后才能达到100%
     else if (analogSwitchMode1[M] && !analogSwitchMode2[M])
     {
 
-        if ((average[S] == 0 || average[M] == 0 || average[S] > bitePoint && average[M] < bitePoint) || (average[M] > bitePoint && average[S] < bitePoint))
+        if ((average[S] == 0 || average[M] == 0 || average[S] > bitePoint && average[M] < bitePoint) || (average[M] > bitePoint && average[S] < bitePoint))  //只按下一个拨片（或一大一小）时，最高只能达到咬合点
         {
             average[S] = average[S] * bitePoint / 1000;
             average[M] = average[M] * bitePoint / 1000;
             Joystick.setXAxis(max(average[S], average[M]));
         }
-        else if (average[M] > bitePoint && average[S] > bitePoint)
+        else if (average[M] > bitePoint && average[S] > bitePoint)  //同时按下且大于咬合点值时，离合值为两拨片较高值
         {
             Joystick.setXAxis(max(average[S], average[M]));
         }
-        else if ((average[S] == 1000 && average[M] < 1000 && average[M] > bitePoint) || (average[M] == 1000 && average[S] < 1000 && average[S] > bitePoint))
+        else if ((average[S] == 1000 && average[M] < 1000 && average[M] > bitePoint) || (average[M] == 1000 && average[S] < 1000 && average[S] > bitePoint))  //一侧完全按下，释放另一侧，值范围为100&到咬合点
         {
             Joystick.setXAxis(min(average[S], average[M]));
         }
     }
-    //MODE 3: DYNAMIC HIGH
+    //模式3：动态高模式，两拨片同时按下后激活，只释放一侧拨片降低到咬合点，然后释放另一个拨片来再次降低离合值；未激活时相当于单拨片离合
     else if (!analogSwitchMode1[M] && analogSwitchMode2[M])
     {
         if (average[S] == 1000 && average[M] == 1000)
@@ -223,28 +225,28 @@ void dualClutch(int masterPin, int masterSwitchNumber, int masterReleasedValue, 
             Joystick.setXAxis(max(average[S], average[M]));
         }
     }
-    //MODE 4: BRAKE AND THROTTLE
+    //模式4：刹车和油门
     else
     {
-        Joystick.setXAxis(0);
-        if (ThrottleMaster)
+        Joystick.setXAxis(0);  //取消离合控制
+        if (ThrottleMaster)  //参数为1时，主拨片为油门，从拨片为刹车
         {
             Joystick.setThrottle(average[M]);
             Joystick.setBrake(average[S]);
         }
-        else
+        else  //参数为0时，相反
         {
             Joystick.setThrottle(average[S]);
             Joystick.setBrake(average[M]);
         }
     }
 
-    if (latchState[neutralButtonRow - 1][neutralButtonCol - 1])
+    if (latchState[neutralButtonRow - 1][neutralButtonCol - 1])  //空挡按钮按下时，离合器拉满
     {
         Joystick.setXAxis(1000);
     }
 
-
+    //传递模式值给编码器字段
     long push = 0;
     push = push | analogSwitchMode1[M];
     push = push | (analogSwitchMode2[M] << 1);

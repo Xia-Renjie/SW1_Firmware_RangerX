@@ -1,3 +1,4 @@
+//在自定义12个预设中进行切换的功能函数
 void preset2Bit(int row, int column, bool reverse)
 {
     int Row = row - 1;
@@ -5,7 +6,7 @@ void preset2Bit(int row, int column, bool reverse)
     int Number = buttonNumber[Row][Column];
     int Reverse = reverse;
 
-    //Find switch absolute position
+    //功能实现同2位增量编码器
 
     bool Pin1 = rawState[Row][Column];
     bool Pin2 = rawState[Row][Column + 1];
@@ -26,7 +27,6 @@ void preset2Bit(int row, int column, bool reverse)
 
     int result = pos;
 
-    //Short debouncer on switch rotation
 
     if (pushState[Row][Column] != result)
     {
@@ -38,20 +38,18 @@ void preset2Bit(int row, int column, bool reverse)
         else if ((globalClock - switchTimer[Row][Column] > encoder2Wait) && latchLock[Row][Column])
         {
             //----------------------------------------------
-            //----------------PRESET CHANGE-------------------
+            //-------------------切换预设-------------------
             //----------------------------------------------
 
-            //Due to placement of this scope, mode change will only occur on switch rotation.
+            //因为占位符的存在，模式切换仅在编码器旋转时才会生效
 
-            //Engage encoder pulse timer
             switchTimer[Row][Column + 1] = globalClock;
 
-            //Update difference, storing the value in pushState on pin 2
             pushState[Row][Column + 1] = result - pushState[Row][Column];
 
             int8_t difference = pushState[Row][Column + 1];
 
-            if (pushState[modButtonRow - 1][modButtonCol - 1] == 1)
+            if (pushState[modButtonRow - 1][modButtonCol - 1] == 1)  //按下模式调整按钮时才可以切换预设
             {
                 if ((difference > 0 && difference < 2) || difference < -2)
                 {
@@ -70,18 +68,16 @@ void preset2Bit(int row, int column, bool reverse)
                     switchPreset = 0;
                 }
 
-                presets(switchPreset);
+                presets(switchPreset);  //调用函数启用预设
             }
 
-            //Give new value to pushState
             pushState[Row][Column] = result;
-            //Make sure we dont do this again
             latchLock[Row][Column] = false;
         }
     }
 
     int8_t difference = pushState[Row][Column + 1];
-    
+    //未按下模式调整按钮时，功能同普通2位增量编码器
     if (pushState[modButtonRow - 1][modButtonCol - 1] == 0)
     {
         if (difference != 0)
@@ -113,11 +109,9 @@ void preset2Bit(int row, int column, bool reverse)
         }
     }
 
-    //Push preset
+    //推送预设值给按钮位字段
 
     long push = 0;
     push = push | (switchPreset << 10);
     buttonField = buttonField | push;
-
-
 }

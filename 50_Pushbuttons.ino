@@ -2,7 +2,7 @@
 //---------按钮函数----------
 //---------------------------
 
-void pushButton(int8_t row, int8_t column)  //自复位点动按钮，参数为行、列号
+void pushButton(int8_t row, int8_t column)  //一般点动按钮（自复位按钮就是自复位功能，自锁按钮就是自锁功能），参数为行、列号
 {
     int8_t Row = row - 1;
     int8_t Column = column - 1;
@@ -85,7 +85,7 @@ void pushButtonM(int8_t row, int8_t column, int8_t fieldPlacement)  //多模式�
 }
 
 
-void pushButtonL(int8_t row, int8_t column)  //自锁按钮，参数为行、列号和占位参数
+void pushButtonL(int8_t row, int8_t column)  //用自复位按钮实现自锁功能，参数为行、列号和占位参数
 {
     int8_t Row = row - 1;
     int8_t Column = column - 1;

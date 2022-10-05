@@ -1,3 +1,4 @@
+//在8个按钮模式预设矩阵和模拟输入预设模式矩阵中进行切换的功能函数
 void presetSwitch(int row, int column, bool reverse)
 {
     int Row = row - 1;
@@ -6,7 +7,7 @@ void presetSwitch(int row, int column, bool reverse)
     int FieldPlacement = 11;
     int Reverse = reverse;
 
-    //Find switch absolute position
+    //功能实现同2位增量编码器
 
     bool Pin1 = rawState[Row][Column];
     bool Pin2 = rawState[Row][Column + 1];
@@ -27,7 +28,6 @@ void presetSwitch(int row, int column, bool reverse)
 
     int result = pos;
 
-    //Short debouncer on switch rotation
 
     if (pushState[Row][Column] != result)
     {
@@ -39,20 +39,18 @@ void presetSwitch(int row, int column, bool reverse)
         else if ((globalClock - switchTimer[Row][Column] > encoder2Wait) && latchLock[Row][Column])
         {
             //----------------------------------------------
-            //----------------PRESET CHANGE-------------------
+            //-------------------切换预设-------------------
             //----------------------------------------------
 
-            //Due to placement of this scope, mode change will only occur on switch rotation.
+            //因为占位符的存在，模式切换仅在编码器旋转时才会生效
 
-            //Engage encoder pulse timer
             switchTimer[Row][Column + 1] = globalClock;
 
-            //Update difference, storing the value in pushState on pin 2
             pushState[Row][Column + 1] = result - pushState[Row][Column];
 
             int8_t difference = pushState[Row][Column + 1];
 
-            if (pushState[modButtonRow - 1][modButtonCol - 1] == 1)
+            if (pushState[modButtonRow - 1][modButtonCol - 1] == 1)  //按下模式调整按钮时才可以切换预设
             {
                 if ((difference > 0 && difference < 2) || difference < -2)
                 {
@@ -62,6 +60,7 @@ void presetSwitch(int row, int column, bool reverse)
                 {
                     switchPreset = switchPreset - 1 + (2 * Reverse);
                 }
+                //预设值范围0-7
                 if (switchPreset < 0)
                 {
                     switchPreset = 7;
@@ -71,15 +70,15 @@ void presetSwitch(int row, int column, bool reverse)
                     switchPreset = 0;
                 }
 
-                //Clearing all buttons
+                //先清空所有按钮的开关状态
                 for (int i = 0; i < BUTTONCOUNT; i++)
                 {
                     Joystick.releaseButton(i);
                 }
 
-                //LOADING THE PRESETS
+                //加载预设
 
-        //1
+                //1
                 if (switchPreset == 0)
                 {
                     for (int e = 0; e < rowCount; e++)
@@ -217,48 +216,47 @@ void presetSwitch(int row, int column, bool reverse)
                 }
             }
 
-            //Give new value to pushState
             pushState[Row][Column] = result;
-            //Make sure we dont do this again
             latchLock[Row][Column] = false;
         }
     }
 
+    //未按下模式调整按钮时，功能同普通2位增量编码器
     int8_t difference = pushState[Row][Column + 1];
-    if (difference != 0)
+    if (pushState[modButtonRow - 1][modButtonCol - 1] == 0)
     {
-        if (globalClock - switchTimer[Row][Column + 1] < encoder2Pulse + encoder2Wait)
+        if (difference != 0)
         {
-            if ((difference > 0 && difference < 2) || difference < -2)
+            if (globalClock - switchTimer[Row][Column + 1] < encoder2Pulse + encoder2Wait)
             {
-                Joystick.setButton(Number + Reverse, 1);
-                Joystick.setButton(Number + 1 - Reverse, 0);
-            }
-            else if ((difference < 0 && difference > -2) || difference > 2)
-            {
-                Joystick.setButton(Number + Reverse, 0);
-                Joystick.setButton(Number + 1 - Reverse, 1);
+                if ((difference > 0 && difference < 2) || difference < -2)
+                {
+                    Joystick.setButton(Number + Reverse, 1);
+                    Joystick.setButton(Number + 1 - Reverse, 0);
+                }
+                else if ((difference < 0 && difference > -2) || difference > 2)
+                {
+                    Joystick.setButton(Number + Reverse, 0);
+                    Joystick.setButton(Number + 1 - Reverse, 1);
+                }
+                else
+                {
+                    pushState[Row][Column + 1] = 0;
+                }
             }
             else
             {
                 pushState[Row][Column + 1] = 0;
+                pushState[Row][Column] = result;
+                Joystick.setButton(Number, 0);
+                Joystick.setButton(Number + 1, 0);
             }
-        }
-        else
-        {
-            pushState[Row][Column + 1] = 0;
-            pushState[Row][Column] = result;
-            Joystick.setButton(Number, 0);
-            Joystick.setButton(Number + 1, 0);
         }
     }
 
-
-    //Push preset
+    //推送预设值给按钮位字段
 
     long push = 0;
     push = push | (switchPreset << 11);
     buttonField = buttonField | push;
-
-
 }

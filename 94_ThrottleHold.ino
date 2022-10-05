@@ -1,4 +1,5 @@
-void throttleHold(int8_t buttonRow, int8_t buttonCol, int8_t rotaryRow, int8_t rotaryCol, bool reverse)
+//油门保持功能按钮函数，通过按钮将油门锁定在某个值
+void throttleHold(int8_t buttonRow, int8_t buttonCol, int8_t rotaryRow, int8_t rotaryCol, bool reverse)  //参数为按钮行、列号，用于调整参数的编码器行、列号，是否反向旋转调整参数
 {
     int8_t ButtonRow = buttonRow-1;
     int8_t ButtonCol = buttonCol-1;
@@ -7,7 +8,7 @@ void throttleHold(int8_t buttonRow, int8_t buttonCol, int8_t rotaryRow, int8_t r
     int8_t Number = buttonNumber[Row][Column];
     int8_t Reverse = reverse;
 
-    //Button logics
+    //按钮状态刷新逻辑
     if (pushState[ButtonRow][ButtonCol] != rawState[ButtonRow][ButtonCol] && (globalClock - switchTimer[ButtonRow][ButtonCol]) > buttonCooldown)
     {
         switchTimer[ButtonRow][ButtonCol] = globalClock;
@@ -19,7 +20,7 @@ void throttleHold(int8_t buttonRow, int8_t buttonCol, int8_t rotaryRow, int8_t r
         pushState[ButtonRow][ButtonCol] = rawState[ButtonRow][ButtonCol];
     }
 
-    //Find switch absolute position
+    //编码器调整参数逻辑，同rotary2Inc()
 
     bool Pin1 = rawState[Row][Column];
     bool Pin2 = rawState[Row][Column + 1];
@@ -40,8 +41,6 @@ void throttleHold(int8_t buttonRow, int8_t buttonCol, int8_t rotaryRow, int8_t r
 
     int result = pos;
 
-    //Short debouncer on switch rotation
-
     if (pushState[Row][Column] != result)
     {
         if (globalClock - switchTimer[Row][Column] > (encoder2Wait + encoder2Pulse + encoderCooldown))
@@ -51,31 +50,27 @@ void throttleHold(int8_t buttonRow, int8_t buttonCol, int8_t rotaryRow, int8_t r
         }
         else if ((globalClock - switchTimer[Row][Column] > encoder2Wait) && latchLock[Row][Column])
         {
-            //Engage encoder pulse timer
             switchTimer[Row][Column + 1] = globalClock;
 
-            //Update difference, storing the value in pushState on pin 2
             pushState[Row][Column + 1] = result - pushState[Row][Column];
 
-            //Give new value to pushState
             pushState[Row][Column] = result;
 
-            //Make sure we dont do this again
             latchLock[Row][Column] = false;
 
             int8_t difference = pushState[Row][Column + 1];
             if ((difference > 0 && difference < 2) || difference < -2)
             {
-                if (brakeMagicOn)
+                if (brakeMagicOn)  //如果打开了魔法刹车开关，则编码器用于增加魔法刹车值（量程为10，即1%）
                 {
                     brakeMagicValue = brakeMagicValue + 10 - (20 * Reverse);
                 }
-                else if (pushState[ButtonRow][ButtonCol]==1)
+                else if (pushState[ButtonRow][ButtonCol]==1)  //如果按下了油门保持按钮，则编码器增加调整油门保持值（量程为10，即1%）
                 {
                     throttleHoldValue = throttleHoldValue + 10 - (20 * Reverse);
                 }
             }
-            else if ((difference < 0 && difference > -2) || difference > 2)
+            else if ((difference < 0 && difference > -2) || difference > 2)  //反向旋转为减少
             {
                 if (brakeMagicOn)
                 {
@@ -90,7 +85,7 @@ void throttleHold(int8_t buttonRow, int8_t buttonCol, int8_t rotaryRow, int8_t r
     }
 
     int8_t difference = pushState[Row][Column + 1];
-    if (difference != 0 && !brakeMagicOn && pushState[ButtonRow][ButtonCol] == 0)
+    if (difference != 0 && !brakeMagicOn && pushState[ButtonRow][ButtonCol] == 0)  //魔法刹车和油门保持都没打开时，编码器为一般增减调整功能
     {
         if (globalClock - switchTimer[Row][Column + 1] < encoder2Pulse + encoder2Wait)
         {
@@ -120,13 +115,14 @@ void throttleHold(int8_t buttonRow, int8_t buttonCol, int8_t rotaryRow, int8_t r
 
     if (pushState[ButtonRow][ButtonCol] == 1)
     {
-        Joystick.setThrottle(throttleHoldValue);
+        Joystick.setThrottle(throttleHoldValue);  //功能打开时，将油门保持值赋予油门轴
     }
     else
     {
-        Joystick.setThrottle(0);
+        Joystick.setThrottle(0);  //功能关闭时，将油门轴归0
     }
 
+    //传递油门保持模式激活状态给按钮位字段
     long push = pushState[ButtonRow][ButtonCol];
     push = push << 8;
     buttonField = buttonField | push;
