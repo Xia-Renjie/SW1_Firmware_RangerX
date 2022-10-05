@@ -1,4 +1,6 @@
+//用12档旋转开关实现24档位加旋转编码器功能
 void multiFunction2Bit24(int analogPin, int switchNumber, int row, int column, bool reverse, int pos1, int pos2, int pos3, int pos4, int pos5, int pos6, int pos7, int pos8, int pos9, int pos10, int pos11, int pos12)
+//参数为模拟输入针脚，按钮编号，针脚行、列号，是否反向旋转，1-12档位读数
 {
     int Pin = analogPin;
     int Pos1 = pos1;
@@ -21,7 +23,7 @@ void multiFunction2Bit24(int analogPin, int switchNumber, int row, int column, b
     int Row = row - 1;
     int Column = column - 1;
 
-    //READ POSITION OF 12-POS ANALOG SWITCH
+    //读取数值确定在12档开关中的具体档位
 
     int value = analogRead(Pin);
 
@@ -40,15 +42,15 @@ void multiFunction2Bit24(int analogPin, int switchNumber, int row, int column, b
 
     resultAnalog--;
 
-    //Update button number to use
-
+    //确定当前档位要使用的按钮编号
+    
     Number = analogButtonNumber[N] + (resultAnalog * 2);
 
-    //ENCODER POSITION AND DEBOUNCE
+    //确定旋转方向
 
     int Reverse = reverse;
 
-    //Find switch absolute position
+    //找到开关绝对位置
 
     bool Pin1 = rawState[Row][Column];
     bool Pin2 = rawState[Row][Column + 1];
@@ -69,7 +71,7 @@ void multiFunction2Bit24(int analogPin, int switchNumber, int row, int column, b
 
     int result = pos;
 
-    //Short debouncer on switch rotation
+    //旋转过程中去抖动
 
     if (pushState[Row][Column] != result)
     {
@@ -80,20 +82,17 @@ void multiFunction2Bit24(int analogPin, int switchNumber, int row, int column, b
         }
         else if ((globalClock - switchTimer[Row][Column] > encoder2Wait) && latchLock[Row][Column])
         {
-            //Engage encoder pulse timer
             switchTimer[Row][Column + 1] = globalClock;
 
-            //Update difference, storing the value in pushState on pin 2
             pushState[Row][Column + 1] = result - pushState[Row][Column];
 
-            //Give new value to pushState
             pushState[Row][Column] = result;
 
-            //Make sure we dont do this again
             latchLock[Row][Column] = false;
         }
     }
 
+    //用12档开关实现选择编码器功能
     int difference = pushState[Row][Column + 1];
     if (difference != 0)
     {
@@ -124,6 +123,8 @@ void multiFunction2Bit24(int analogPin, int switchNumber, int row, int column, b
     }
 
 }
+
+//用12档旋转开关实现36档位加旋转编码器功能
 void multiFunction2Bit36(int analogPin, int switchNumber, int row, int column, bool reverse, int pos1, int pos2, int pos3, int pos4, int pos5, int pos6, int pos7, int pos8, int pos9, int pos10, int pos11, int pos12)
 {
     int Pin = analogPin;
@@ -147,7 +148,7 @@ void multiFunction2Bit36(int analogPin, int switchNumber, int row, int column, b
     int Row = row - 1;
     int Column = column - 1;
 
-    //READ POSITION OF 12-POS ANALOG SWITCH
+    //读取数值确定在12档开关中的具体档位
 
     int value = analogRead(Pin);
 
@@ -166,7 +167,7 @@ void multiFunction2Bit36(int analogPin, int switchNumber, int row, int column, b
 
     resultAnalog--;
 
-    analogTempState[N] = 0; //Refreshing encoder mode difference
+    analogTempState[N] = 0; //更新编码器模式的差值
 
     for (int i = 0; i < 12; i++)
     {
@@ -181,15 +182,15 @@ void multiFunction2Bit36(int analogPin, int switchNumber, int row, int column, b
     }
 
 
-    //Update button number to use
+    //确定当前档位要使用的按钮编号
 
     Number = Number + (resultAnalog * 2);
 
-    //ENCODER POSITION AND DEBOUNCE
+    //确定旋转方向
 
     int Reverse = reverse;
 
-    //Find switch absolute position
+    //找到开关绝对位置
 
     bool Pin1 = rawState[Row][Column];
     bool Pin2 = rawState[Row][Column + 1];
@@ -210,7 +211,7 @@ void multiFunction2Bit36(int analogPin, int switchNumber, int row, int column, b
 
     int result = pos;
 
-    //Short debouncer on switch rotation
+    //旋转过程中去抖动
 
     if (pushState[Row][Column] != result)
     {
@@ -221,20 +222,17 @@ void multiFunction2Bit36(int analogPin, int switchNumber, int row, int column, b
         }
         else if ((globalClock - switchTimer[Row][Column] > encoder2Wait) && latchLock[Row][Column])
         {
-            //Engage encoder pulse timer
             switchTimer[Row][Column + 1] = globalClock;
 
-            //Update difference, storing the value in pushState on pin 2
             pushState[Row][Column + 1] = result - pushState[Row][Column];
 
-            //Give new value to pushState
             pushState[Row][Column] = result;
 
-            //Make sure we dont do this again
             latchLock[Row][Column] = false;
         }
     }
 
+    //用12档开关实现选择编码器功能
     int difference = pushState[Row][Column + 1];
     if (difference != 0)
     {
@@ -265,6 +263,7 @@ void multiFunction2Bit36(int analogPin, int switchNumber, int row, int column, b
     }
 
 }
+
 void multiFunction2Button24(int analogPin, int switchNumber, int rowButton1, int columnButton1, int rowButton2, int columnButton2, bool reverse, int pos1, int pos2, int pos3, int pos4, int pos5, int pos6, int pos7, int pos8, int pos9, int pos10, int pos11, int pos12)
 {
     int Pin = analogPin;

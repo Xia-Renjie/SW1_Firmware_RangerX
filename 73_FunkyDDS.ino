@@ -1,4 +1,7 @@
-void DDSfunky(int Arow, int Acol, int Bcol) {
+//DDS模式（2层24档位）的摇杆旋转编码器函数
+void DDSfunky(int Arow, int Acol, int Bcol)
+//参数为编码器所在行号，A针脚列号，B针脚列号
+{
 
     int Row = Arow - 1;
     int Column = Acol - 1;
@@ -11,58 +14,59 @@ void DDSfunky(int Arow, int Acol, int Bcol) {
 
     int bCol = Bcol - 1;
 
-    //Reading switch mode
+    //读取开关模式
     toggleTimer[Row][bCol] = switchMode[Row][bCol] << 1 | switchMode[Row][Column];
 
+    //标准模式
     if (!rawState[Row][Column] && !rawState[Row][bCol])
     {
-        pushState[Row][Column] = 1;
+        pushState[Row][Column] = 1; //读取到 00
     }
     else if (!rawState[Row][Column] && rawState[Row][bCol])
     {
         pushState[Row][Column] = 2;
-        latchLock[Row][Column] = 1; //Fetching 01
+        latchLock[Row][Column] = 1; //读取到 01
     }
     else if (rawState[Row][Column] && rawState[Row][bCol])
     {
-        pushState[Row][Column] = 3;
+        pushState[Row][Column] = 3; //读取到 11
     }
     else if (rawState[Row][Column] && !rawState[Row][bCol])
     {
         pushState[Row][Column] = 4;
-        latchLock[Row][bCol] = 1; //Fetching 10
+        latchLock[Row][bCol] = 1; //读取到 10
     }
 
     if ((globalClock - switchTimer[Row][Column] > funkyCooldown) && (globalClock - switchTimer[Row][bCol] > funkyCooldown))
     {
-        if ((latchLock[Row][bCol] && pushState[Row][Column] == 1) || (latchLock[Row][Column] && pushState[Row][Column] == 3)) //CLOCKWIZE TURN
+        if ((latchLock[Row][bCol] && pushState[Row][Column] == 1) || (latchLock[Row][Column] && pushState[Row][Column] == 3)) //顺时针旋转
         {
             switchTimer[Row][Column] = globalClock;
 
             if (!toggleTimer[Row][bCol] == 1)
             {
-                toggleTimer[Row][Column] --; //Counter for position switch
+                toggleTimer[Row][Column] --; //计算旋转档位数
             }
-            switchModeLock[Row][bCol] = !switchModeLock[Row][bCol]; //For MODE 4
-            if (pushState[modButtonRow - 1][modButtonCol - 1] == 1) //MODE CHANGE
+            switchModeLock[Row][bCol] = !switchModeLock[Row][bCol]; //切换到模式4
+            if (pushState[modButtonRow - 1][modButtonCol - 1] == 1) //切换模式状态
             {
-                for (int i = 0; i < 24; i++) //Reset all buttons
+                for (int i = 0; i < 24; i++) //重设所有按钮状态
                 {
                     Joystick.releaseButton(i + buttonNumber[Row][Column]);
                 }
                 Joystick.releaseButton(buttonNumber[Row][bCol]);
                 Joystick.releaseButton(1 + buttonNumber[Row][bCol]);
-                latchLock[ddButtonRow - 1][ddButtonCol - 1] = false; //Reset DDButton
+                latchLock[ddButtonRow - 1][ddButtonCol - 1] = false; //重设DD按钮
                 latchState[ddButtonRow - 1][ddButtonCol - 1] = false;
-                toggleTimer[Row][bCol] --; //Mode counter
-                if (toggleTimer[Row][bCol] == 1) //Skipping closed DDS mode
+                toggleTimer[Row][bCol] --; //模式计数器
+                if (toggleTimer[Row][bCol] == 1) //跳过封闭式DDS模式
                 {
                     toggleTimer[Row][bCol] = 0;
                 }
             }
         }
 
-        else if ((latchLock[Row][bCol] && pushState[Row][Column] == 3) || (latchLock[Row][Column] && pushState[Row][Column] == 1)) //COUNTER CLOCKWIZE TURN
+        else if ((latchLock[Row][bCol] && pushState[Row][Column] == 3) || (latchLock[Row][Column] && pushState[Row][Column] == 1)) //逆时针旋转
         {
             switchTimer[Row][bCol] = globalClock;
 
@@ -70,19 +74,19 @@ void DDSfunky(int Arow, int Acol, int Bcol) {
             {
                 toggleTimer[Row][Column] ++;
             }
-            switchModeLock[Row][Column] = !switchModeLock[Row][Column]; //For MODE 4
-            if (pushState[modButtonRow - 1][modButtonCol - 1] == 1) //MODE CHANGE
+            switchModeLock[Row][Column] = !switchModeLock[Row][Column]; //切换到模式4
+            if (pushState[modButtonRow - 1][modButtonCol - 1] == 1) //切换模式状态
             {
-                for (int i = 0; i < 24; i++) //Reset all buttons
+                for (int i = 0; i < 24; i++) //重设所有按钮状态
                 {
                     Joystick.releaseButton(i + buttonNumber[Row][Column]);
                 }
                 Joystick.releaseButton(buttonNumber[Row][bCol]);
                 Joystick.releaseButton(1 + buttonNumber[Row][bCol]);
-                latchLock[ddButtonRow - 1][ddButtonCol - 1] = false; //Reset DDButton
+                latchLock[ddButtonRow - 1][ddButtonCol - 1] = false; //重设DD按钮
                 latchState[ddButtonRow - 1][ddButtonCol - 1] = false;
-                toggleTimer[Row][bCol] ++; //Mode counter
-                if (toggleTimer[Row][bCol] == 1) //Skipping closed DDS mode
+                toggleTimer[Row][bCol] ++; //模式计数器
+                if (toggleTimer[Row][bCol] == 1) //跳过封闭式DDS模式
                 {
                     toggleTimer[Row][bCol] = 2;
                 }
@@ -95,7 +99,7 @@ void DDSfunky(int Arow, int Acol, int Bcol) {
         latchLock[Row][Column] = 0;
     }
 
-    //Keep the counters in place
+    //保证计数器在限定范围内计数
     if (toggleTimer[Row][Column] > 11)
     {
         toggleTimer[Row][Column] = 0;
@@ -107,7 +111,7 @@ void DDSfunky(int Arow, int Acol, int Bcol) {
     if (toggleTimer[Row][bCol] > 3)
     {
         toggleTimer[Row][bCol] = 0;
-        latchState[hybridButtonRow - 1][hybridButtonCol - 1] = 0; //Resetting hybrid button on entering this mode
+        latchState[hybridButtonRow - 1][hybridButtonCol - 1] = 0; //进入这个模式1后重设混合按钮
     }
     else if (toggleTimer[Row][bCol] < 0)
     {
@@ -123,18 +127,18 @@ void DDSfunky(int Arow, int Acol, int Bcol) {
     }
 
 
-    //MODE 1: DDS open
+    //模式1：开放式DDS模式
     if (toggleTimer[Row][bCol] == 0)
     {
 
         if (latchState[ddButtonRow - 1][ddButtonCol - 1])
         {
-            for (int i = 0; i < 12; i++) //Remove the remnants from SWITCH MODE 1
+            for (int i = 0; i < 12; i++) //清楚模式1下的所有按钮状态
             {
                 Joystick.releaseButton(i + buttonNumber[Row][Column]);
             }
         }
-        for (int i = 0; i < 24; i++)
+        for (int i = 0; i < 24; i++) //按下对应档位的按钮
         {
             if (i == toggleTimer[Row][Column])
             {
@@ -147,7 +151,7 @@ void DDSfunky(int Arow, int Acol, int Bcol) {
         }
     }
 
-    //MODE 2 / MODE 3: INCREMENTAL
+    //模式2、3：增量编码器
 
     if ((toggleTimer[Row][bCol] == 1 || toggleTimer[Row][bCol] == 2) && !biteButtonBit1 && !biteButtonBit2)
     {
@@ -156,7 +160,7 @@ void DDSfunky(int Arow, int Acol, int Bcol) {
         Joystick.setButton(Number + 1, (globalClock - switchTimer[Row][bCol] < funkyPulse));
     }
 
-    //MODE 4: TOGGLE SWITCHES
+    //模式4：切换开关
 
     if (toggleTimer[Row][bCol] == 3)
     {
@@ -165,7 +169,7 @@ void DDSfunky(int Arow, int Acol, int Bcol) {
         Joystick.setButton(Number + 1, switchModeLock[Row][Column]);;
     }
 
-    //Pushing switch mode
+    //传递模式值给编码器位字段
 
     switchMode[Row][Column] = (toggleTimer[Row][bCol] & B00000001);
     switchMode[Row][bCol] = (toggleTimer[Row][bCol] & B00000010) >> 1;

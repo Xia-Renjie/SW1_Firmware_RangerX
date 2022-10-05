@@ -1,4 +1,6 @@
+//摇杆指向开关函数，类似pushButton()，但加入了算法保证点动开关和指向开关一次只能触发一个
 void funkyButton(int row, int column, int pCol, int Col1, int Col2, int Col3)
+//参数为按钮行、列号，点动开关列号，剩余3个指向开关所在列号（顺序无所谓）
 {
     int Row = row - 1;
     int Column = column - 1;
@@ -27,6 +29,7 @@ void funkyButton(int row, int column, int pCol, int Col1, int Col2, int Col3)
 
 }
 
+//2模式摇杆指向开关函数，类似pushButtonM()，但加入了算法保证点动开关和指向开关一次只能触发一个
 void funkyButtonM(int row, int column, int fieldPlacement, int pCol, int Col1, int Col2, int Col3)
 {
     int Row = row - 1;
@@ -53,7 +56,7 @@ void funkyButtonM(int row, int column, int fieldPlacement, int pCol, int Col1, i
         }
     }
 
-    //Change switch mode
+    //切换开关模式
     if (pushState[Row][Column] == 0)
     {
         switchModeLock[Row][Column] = false;
@@ -67,19 +70,19 @@ void funkyButtonM(int row, int column, int fieldPlacement, int pCol, int Col1, i
         latchState[Row][Column] = false;
     }
 
-    //Push switch mode
+    //推送开关模式给按钮位字段
     long push = 0;
     push = push | switchMode[Row][Column];
     push = push << (FieldPlacement - 1);
     buttonField = buttonField | push;
 
-    //SWITCH MODE 1: MOMENTARY BUTTON
+    //开关模式1：自复位按钮
     if (!switchMode[Row][Column])
     {
         Joystick.setButton(Number, pushState[Row][Column]);
     }
 
-    //SWITCH MODE 2: LATCHING BUTTON
+    //开关模式2：自锁按钮
     else if (switchMode[Row][Column])
     {
         if (pushState[Row][Column] == 0)
@@ -97,7 +100,7 @@ void funkyButtonM(int row, int column, int fieldPlacement, int pCol, int Col1, i
     }
 }
 
-
+//自锁式摇杆指向开关函数，类似pushButtonL()，但加入了算法保证点动开关和指向开关一次只能触发一个
 void funkyButtonL(int row, int column, int pCol, int Col1, int Col2, int Col3)
 {
     int Row = row - 1;
@@ -137,6 +140,7 @@ void funkyButtonL(int row, int column, int pCol, int Col1, int Col2, int Col3)
     Joystick.setButton(Number, latchState[Row][Column]);
 }
 
+//将摇杆指向开关作为混合按钮hybridButton()的函数，加入了算法保证点动开关和指向开关一次只能触发一个
 void funkyButtonHybrid(int row, int column, int pCol, int Col1, int Col2, int Col3)
 {
     hybridButtonRow = row;
@@ -175,6 +179,7 @@ void funkyButtonHybrid(int row, int column, int pCol, int Col1, int Col2, int Co
     }
 }
 
+//将摇杆指向开关作为混合按钮ddButton()的函数，加入了算法保证点动开关和指向开关一次只能触发一个
 void funkyButtonDDButton(int row, int column, int pCol, int Col1, int Col2, int Col3)
 {
     ddButtonRow = row;

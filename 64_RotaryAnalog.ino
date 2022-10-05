@@ -305,7 +305,7 @@ void rotaryAnalog2Mode(int analogPin, int switchNumber, int fieldPlacement, int 
                     Joystick.releaseButton(i - 1 + Number);
                 }
 
-                analogSwitchMode1[N] = !analogSwitchMode1[N]; //切换功能
+                analogSwitchMode1[N] = !analogSwitchMode1[N]; //切换模式
             }
 
             if (!biteButtonBit1 && !biteButtonBit2) //标准模式，未启用咬合点设定

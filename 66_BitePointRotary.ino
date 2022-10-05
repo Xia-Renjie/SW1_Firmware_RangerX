@@ -1,3 +1,4 @@
+//将左侧12档旋转开关设定为咬合点设定旋钮，函数同rotaryAnalog2Mode()
 void rotaryLeft(int analogPin, int switchNumber, int fieldPlacement, int pos1, int pos2, int pos3, int pos4, int pos5, int pos6, int pos7, int pos8, int pos9, int pos10, int pos11, int pos12, bool reverse)
 {
     int Pin = analogPin;
@@ -45,7 +46,6 @@ void rotaryLeft(int analogPin, int switchNumber, int fieldPlacement, int pos1, i
         result = 11 - result;
     }
 
-    //Short debouncer on switch rotation
 
     if (analogLastCounter[N] != result)
     {
@@ -57,7 +57,7 @@ void rotaryLeft(int analogPin, int switchNumber, int fieldPlacement, int pos1, i
         {
 
             //----------------------------------------------
-            //----------------BITE POINT SETTING------------
+            //------------------咬合点设定------------------
             //----------------------------------------------
 
 
@@ -70,34 +70,29 @@ void rotaryLeft(int analogPin, int switchNumber, int fieldPlacement, int pos1, i
             }
 
             //----------------------------------------------
-            //----------------MODE CHANGE-------------------
+            //-------------------模式切换-------------------
             //----------------------------------------------
-
-            //Due to placement of this scope, mode change will only occur on switch rotation.
-            //If you want to avoid switching mode, set fieldPlacement to 0.
+            //因为占位符的存在，模式切换仅在编码器旋转时才会生效
+            //如果你不想推送模式值给位字段，就把fieldPlacement设定为0
 
             else if (pushState[modButtonRow - 1][modButtonCol - 1] == 1 && FieldPlacement != 0)
             {
-                for (int i = 0; i < maxPos + 1; i++) //Remove the remnants from SWITCH MODE 1
+                for (int i = 0; i < maxPos + 1; i++)
                 {
                     Joystick.releaseButton(i - 1 + Number);
                 }
 
-                analogSwitchMode1[N] = !analogSwitchMode1[N]; //SWAP MODE
+                analogSwitchMode1[N] = !analogSwitchMode1[N];
             }
 
-            //Engage encoder pulse timer
             analogTimer2[N] = globalClock;
 
-            //Update difference, storing the value in pushState on pin 2
             analogTempState[N] = result - analogLastCounter[N];
 
-            //Give new value to pushState
             analogLastCounter[N] = result;
 
-            if (biteButtonBit1 || biteButtonBit2) //Bite point setting
+            if (biteButtonBit1 || biteButtonBit2)
             {
-                //Adjusting bite up/down
 
                 uint8_t biteRes = result + 1;
 
@@ -136,11 +131,11 @@ void rotaryLeft(int analogPin, int switchNumber, int fieldPlacement, int pos1, i
         }
     }
 
-    //SWITCH MODE 1: 12 - position switch
+    //开关模式1：12档开关
 
     if (!analogSwitchMode1[N] && !biteButtonBit1 && !biteButtonBit2)
     {
-        analogTempState[N] = 0; //Refreshing encoder mode difference
+        analogTempState[N] = 0;
 
         uint8_t value = analogLastCounter[N];
         if (quickSwitchState)
@@ -161,7 +156,7 @@ void rotaryLeft(int analogPin, int switchNumber, int fieldPlacement, int pos1, i
         }
     }
 
-    //SWITCH MODE 2: Incremental switch
+    //开关模式2和4：增量编码器和封闭式混合模式旋钮
 
     else if (analogSwitchMode1[N] && !biteButtonBit1 && !biteButtonBit2)
     {
@@ -191,7 +186,7 @@ void rotaryLeft(int analogPin, int switchNumber, int fieldPlacement, int pos1, i
         }
     }
 
-    //Push switch mode
+    //传递模式值给按钮位字段
     long push = 0;
     push = push | analogSwitchMode1[N];
     push = push << (FieldPlacement - 1);
