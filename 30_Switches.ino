@@ -11,8 +11,8 @@ void loop()
 
     globalClock = millis();  //全局时钟为系统运行时间，单位毫秒
 
-    encoderField = 0;
-    buttonField = 0;
+    //encoderField = 0;
+    //buttonField = 0;
     matrix();
 
     //-------------------------
