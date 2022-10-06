@@ -828,6 +828,6 @@ void DDS4bit(int row, int column, bool reverse)
     long push = 0;
     push = push | switchMode[Row][Column];
     push = push | (switchMode[Row][Column + 1] << 1);
-    push = push << (2*(FieldPlacement - 1));
+    push = push << (2*(FieldPlacement - 1));  //注意此处位字段的位置与模式的位置不同，所有的DDS模式公用15 16位
     rotaryField = rotaryField | push;
 }

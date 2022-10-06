@@ -206,7 +206,7 @@ void rotary2Modes(int row, int column, int fieldPlacement, int hybridPositions, 
     long push = 0;
     push = push | switchMode[Row][Column];
     push = push | (switchMode[Row][Column + 1] << 1);
-    push = push << (2 * (FieldPlacement - 1));
+    push = push << (FieldPlacement - 1);
     rotaryField = rotaryField | push;
 }
 
@@ -537,6 +537,313 @@ void rotary2Multis(int row, int column, int fieldPlacement, int positions1, int 
     long push = 0;
     push = push | switchMode[Row][Column];
     push = push | (switchMode[Row][Column + 1] << 1);
-    push = push << (2 * (FieldPlacement - 1));
+    push = push << (FieldPlacement - 1);
+    rotaryField = rotaryField | push;
+}
+
+//DDS模式4位编码器，实现方式类似DDS4bit()
+void DDS2bit(int row, int column, bool reverse)
+{
+    int Row = row - 1;
+    int Column = column - 1;
+    int Number = buttonNumber[Row][Column];
+    int FieldPlacement = 8;
+    int HyPos = 12;
+    int Reverse = reverse;
+
+    if (latchState[ddButtonRow - 1][ddButtonCol - 1] && !switchMode[Row][Column + 1])  //Jumping 
+    {
+        Number = Number + 12;
+        if (!switchMode[Row][Column])
+        {
+            for (int i = 0; i < 12; i++)
+            {
+                Joystick.releaseButton(i + Number - 12);
+            }
+        }
+
+    }
+
+
+    bool Pin1 = rawState[Row][Column];
+    bool Pin2 = rawState[Row][Column + 1];
+
+
+    bool array[2] = { Pin1, Pin2 };
+
+    int pos = 0;
+
+    for (int i = 0; i < 2; i++)
+    {
+        if (array[i])
+        {
+            pos |= (1 << i);
+        }
+    }
+
+    pos = pos ^ (pos >> 1);
+
+    int result = pos;
+
+
+    if (pushState[Row][Column] != result)
+    {
+        if (globalClock - switchTimer[Row][Column] > (encoder2Wait + encoder2Pulse + encoderCooldown))
+        {
+            switchTimer[Row][Column] = globalClock;
+            latchLock[Row][Column] = true;
+        }
+        else if ((globalClock - switchTimer[Row][Column] > encoder2Wait) && latchLock[Row][Column])
+        {
+            switchTimer[Row][Column + 1] = globalClock;
+
+            pushState[Row][Column + 1] = result - pushState[Row][Column];
+
+            pushState[Row][Column] = result;
+
+
+            latchLock[Row][Column] = false;
+
+            //----------------------------------------------
+            //------------------咬合点设定------------------
+            //----------------------------------------------
+
+
+            if (pushState[biteButtonRow - 1][biteButtonCol - 1] == 1)
+            {
+                if (!biteButtonBit1 && !biteButtonBit2)
+                {
+                    biteButtonBit1 = true;
+                }
+            }
+
+            //----------------------------------------------
+            //----------------MODE CHANGE-------------------
+            //----------------------------------------------
+
+            //----------------------------------------------
+            //-------------------模式切换-------------------
+            //----------------------------------------------
+            //因为占位符的存在，模式切换仅在编码器旋转时才会生效
+            //如果你不想推送模式值给位字段，就把fieldPlacement设定为0
+
+            if (pushState[modButtonRow - 1][modButtonCol - 1] == 1)
+            {
+                for (int i = 0; i < 25; i++) 
+                {
+                    Joystick.releaseButton(i - 1 + Number);
+                }
+
+                if (switchMode[Row][Column] && switchMode[Row][Column + 1])
+                {
+                    switchMode[Row][Column + 1] = false;
+                    switchMode[Row][Column] = false;
+                    latchState[hybridButtonRow - 1][hybridButtonCol - 1] = 0;
+                }
+                else if (!switchMode[Row][Column] && !switchMode[Row][Column + 1]) 
+                {
+                    switchMode[Row][Column + 1] = true;
+                    switchMode[Row][Column] = false;
+                }
+                else if (!switchMode[Row][Column] && switchMode[Row][Column + 1])
+                {
+                    switchMode[Row][Column + 1] = true;
+                    switchMode[Row][Column] = true;
+                }
+            }
+
+            if (!biteButtonBit1 && !biteButtonBit2)
+            {
+
+                int8_t difference = pushState[Row][Column + 1];
+                if (!switchMode[Row][Column] && !switchMode[Row][Column + 1])
+                {
+                    if ((difference > 0 && difference < 2) || difference < -2)
+                    {
+                        toggleTimer[Row][Column] = toggleTimer[Row][Column] + 1 - (2 * Reverse);
+                    }
+                    else if ((difference < 0 && difference > -2) || difference > 2)
+                    {
+                        toggleTimer[Row][Column] = toggleTimer[Row][Column] - 1 + (2 * Reverse);
+                    }
+                    if (toggleTimer[Row][Column] < 0)
+                    {
+                        toggleTimer[Row][Column] = HyPos;
+                    }
+                }
+
+                else if (switchMode[Row][Column + 1])
+                {
+                    toggleTimer[Row][Column] = 0;
+                }
+            }
+            else
+            {
+                int8_t difference = pushState[Row][Column + 1];
+
+                if ((((difference > 0 && difference < 2) || difference < -2) && Reverse == 0) || (!((difference > 0 && difference < 2) || difference < -2) && Reverse == 1))
+                {
+                    if (biteButtonBit1 && !biteButtonBit2)
+                    {
+                        bitePoint = bitePoint + 100;
+                        if (bitePoint > 1000)
+                        {
+                            bitePoint = 1000;
+                        }
+                    }
+                    else if (!biteButtonBit1 && biteButtonBit2)
+                    {
+                        bitePoint = bitePoint + 10;
+                        if (bitePoint > 1000)
+                        {
+                            bitePoint = 1000;
+                        }
+                    }
+                    else if (biteButtonBit1 && biteButtonBit2)
+                    {
+                        bitePoint = bitePoint + 1;
+                        if (bitePoint > 1000)
+                        {
+                            bitePoint = 1000;
+                        }
+                    }
+                }
+                if ((((difference < 0 && difference > -2) || difference > 2) && Reverse == 0) || (!((difference < 0 && difference > -2) || difference > 2) && Reverse == 1))
+                {
+                    if (biteButtonBit1 && !biteButtonBit2)
+                    {
+                        bitePoint = bitePoint - 100;
+                        if (bitePoint < 0)
+                        {
+                            bitePoint = 0;
+                        }
+                    }
+                    else if (!biteButtonBit1 && biteButtonBit2)
+                    {
+                        bitePoint = bitePoint - 10;
+                        if (bitePoint < 0)
+                        {
+                            bitePoint = 0;
+                        }
+                    }
+                    else if (biteButtonBit1 && biteButtonBit2)
+                    {
+                        bitePoint = bitePoint - 1;
+                        if (bitePoint < 0)
+                        {
+                            bitePoint = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if (!biteButtonBit1 && !biteButtonBit2)
+    {
+
+        if (!switchMode[Row][Column + 1])
+        {
+            switchMode[Row][Column] = latchState[hybridButtonRow - 1][hybridButtonCol - 1];
+        }
+
+        if (switchMode[Row][Column + 1])
+        {
+            latchLock[ddButtonRow - 1][ddButtonCol - 1] = false;
+            latchState[ddButtonRow - 1][ddButtonCol - 1] = false;
+        }
+
+        //开关模式3：4档开关
+
+        if (!switchMode[Row][Column] && switchMode[Row][Column + 1])
+        {
+            pushState[Row][Column + 1] = 0;
+
+            for (int i = 0; i < 24; i++)
+            {
+                if (i == pushState[Row][Column])
+                {
+                    Joystick.pressButton(i + Number);
+                }
+                else
+                {
+                    Joystick.releaseButton(i + Number);
+                }
+            }
+        }
+
+        //开关模式2和4：增量编码器和封闭式混合模式旋钮
+
+        else if (switchMode[Row][Column])
+        {
+            Number = buttonNumber[Row][Column + 1];
+            int8_t difference = pushState[Row][Column + 1];
+            if (difference != 0)
+            {
+                if (globalClock - switchTimer[Row][Column + 1] < (encoder2Pulse + encoder2Wait))
+                {
+                    if ((difference > 0 && difference < 2) || difference < -2)
+                    {
+                        Joystick.setButton(Number + Reverse, 1);
+                        Joystick.setButton(Number + 1 - Reverse, 0);
+                    }
+                    else if ((difference < 0 && difference > -2) || difference > 2)
+                    {
+                        Joystick.setButton(Number + Reverse, 0);
+                        Joystick.setButton(Number + 1 - Reverse, 1);
+                    }
+                    else
+                    {
+                        pushState[Row][Column + 1] = 0;
+                    }
+                }
+                else
+                {
+                    pushState[Row][Column + 1] = 0;
+                    pushState[Row][Column] = result;
+                    Joystick.setButton(Number, 0);
+                    Joystick.setButton(Number + 1, 0);
+                }
+            }
+        }
+
+        //开关模式1：开放式混合模式旋钮
+        if (!switchMode[Row][Column] && !switchMode[Row][Column + 1])
+        {
+
+            for (int i = 1; i < HyPos + 13; i++)
+            {
+                int e = toggleTimer[Row][Column] % HyPos;
+                if (e == 0)
+                {
+                    e = HyPos;
+                }
+                if (i == e)
+                {
+                    Joystick.pressButton(i - 1 + Number);
+                }
+                else
+                {
+                    Joystick.releaseButton(i - 1 + Number);
+                }
+            }
+        }
+
+        //在模式切换时清除重设所有开关状态
+        if (latchLock[ddButtonRow - 1][ddButtonCol - 1] && !(switchMode[Row][Column] && !switchMode[Row][Column + 1]))
+        {
+            for (int i = 0; i < 13; i++)
+            {
+                Joystick.releaseButton(i - 1 + buttonNumber[Row][Column]);
+            }
+        }
+    }
+
+
+
+    //传递模式值给编码器位字段
+    long push = 0;
+    push = push | switchMode[Row][Column];
+    push = push | (switchMode[Row][Column + 1] << 1);
+    push = push << (2*(FieldPlacement - 1));  //注意此处位字段的位置与模式的位置不同，所有的DDS模式公用15 16位
     rotaryField = rotaryField | push;
 }
