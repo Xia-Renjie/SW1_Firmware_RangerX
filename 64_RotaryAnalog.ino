@@ -755,5 +755,5 @@ void DDSanalog(int analogPin, int switchNumber, int pos1, int pos2, int pos3, in
     push = push | analogSwitchMode1[N];
     push = push | (analogSwitchMode2[N] << 1);
     push = push << (2*(FieldPlacement - 1));
-    encoderField = encoderField | push;
+    rotaryField = rotaryField | push;
 }

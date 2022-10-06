@@ -207,7 +207,7 @@ void rotary2Modes(int row, int column, int fieldPlacement, int hybridPositions, 
     push = push | switchMode[Row][Column];
     push = push | (switchMode[Row][Column + 1] << 1);
     push = push << (2 * (FieldPlacement - 1));
-    encoderField = encoderField | push;
+    rotaryField = rotaryField | push;
 }
 
 //一般2位增量编码器
@@ -538,5 +538,5 @@ void rotary2Multis(int row, int column, int fieldPlacement, int positions1, int 
     push = push | switchMode[Row][Column];
     push = push | (switchMode[Row][Column + 1] << 1);
     push = push << (2 * (FieldPlacement - 1));
-    encoderField = encoderField | push;
+    rotaryField = rotaryField | push;
 }

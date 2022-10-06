@@ -248,7 +248,7 @@ void biteButton(int row, int column)
     push = push | biteButtonBit1;
     push = push | (biteButtonBit2 << 1);
     push = push << (2 * (FieldPlacement - 1));
-    encoderField = encoderField | push;
+    rotaryField = rotaryField | push;
 
     Joystick.setRyAxis(bitePoint);  //将咬合点设定编码器的值传递给咬合点轴
     Joystick.setButton(Number, pushState[Row][Column]);  //传递按钮按下状态

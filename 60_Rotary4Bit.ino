@@ -202,7 +202,7 @@ void rotary4Modes(int row, int column, int fieldPlacement, int hybridPositions, 
     push = push | switchMode[Row][Column];
     push = push | (switchMode[Row][Column + 1] << 1);
     push = push << (FieldPlacement - 1);
-    encoderField = encoderField | push;
+    rotaryField = rotaryField | push;
 }
 
 //一般4位增量编码器
@@ -518,7 +518,7 @@ void rotary4Multis(int row, int column, int fieldPlacement, int positions1, int 
     push = push | switchMode[Row][Column];
     push = push | (switchMode[Row][Column + 1] << 1);
     push = push << (FieldPlacement - 1);
-    encoderField = encoderField | push;
+    rotaryField = rotaryField | push;
 }
 
 //DDS模式4位编码器
@@ -829,5 +829,5 @@ void DDS4bit(int row, int column, bool reverse)
     push = push | switchMode[Row][Column];
     push = push | (switchMode[Row][Column + 1] << 1);
     push = push << (2*(FieldPlacement - 1));
-    encoderField = encoderField | push;
+    rotaryField = rotaryField | push;
 }

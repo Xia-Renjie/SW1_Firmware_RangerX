@@ -41,7 +41,7 @@ void quickSwitch(int8_t row, int8_t column)
     long pesh = 0;
     pesh = pesh | switchMode[Row][Column];
     pesh = pesh << 1;
-    encoderField = encoderField | pesh;
+    rotaryField = rotaryField | pesh;
 
     //开关模式2：自复位按钮
     if (switchMode[Row][Column])

@@ -11,7 +11,7 @@ void loop()
 
     globalClock = millis();  //全局时钟为系统运行时间，单位毫秒
 
-    //encoderField = 0;
+    //rotaryField = 0;
     //buttonField = 0;
     matrix();
 
@@ -106,7 +106,7 @@ void loop()
 
    
 
-    Joystick.setZAxis(encoderField - 32768);  //设置轴初始值
+    Joystick.setZAxis(rotaryField - 32768);  //设置轴初始值
     Joystick.setYAxis(buttonField - 32768);
 
     Joystick.sendState();  //发送按钮状态

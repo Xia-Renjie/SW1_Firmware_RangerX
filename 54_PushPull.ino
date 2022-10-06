@@ -173,5 +173,5 @@ void pushPull(int rightPullRow, int rightPullCol, int rightPushRow, int rightPus
     //传递手刹状态给编码器位字段
     long pesh = 0;
     pesh = pesh | handbrake;
-    encoderField = encoderField | pesh;
+    rotaryField = rotaryField | pesh;
 }
