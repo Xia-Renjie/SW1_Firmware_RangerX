@@ -41,7 +41,7 @@ void dualClutch(int masterPin, int masterSwitchNumber, int masterReleasedValue, 
         }
     }
 
-    //读取4次取平均值来平滑读数
+    //读取10次取平均值来平滑读数
     total[M] = total[M] - readings[M][readIndex[M]];
     readings[M][readIndex[M]] = masterNormalized;
     total[M] = total[M] + readings[M][readIndex[M]];
