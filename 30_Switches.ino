@@ -14,6 +14,7 @@ void loop()
     rotaryField = 0;
     buttonField = 0;
     matrix();
+    //runningPresets();  //使用31的预设更新方式
 
     //-------------------------
     //-------开关函数定义-------
