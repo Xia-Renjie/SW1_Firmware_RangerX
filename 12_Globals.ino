@@ -15,6 +15,12 @@ float bitePoint;  //咬合点值
 uint8_t leftQuickValue;  //左快速切换预设值
 uint8_t rightQuickValue;  //右快速切换预设值
 bool quickSwitchState;  //快速切换状态
+uint8_t quickValue1;  //QuickRotary中使用的变量
+uint8_t quickValue2;
+uint8_t quickValue3;
+uint8_t quickValue4;
+bool quickSwitch12State;
+bool quickSwitch34State;
 
 //功能按钮
 int8_t hybridButtonRow;  //混合按钮行编号
@@ -50,11 +56,14 @@ unsigned long globalClock;  //全局时钟
 #define encoder2Wait 2  //编码器2等待间隔2ms
 #define encoder2Pulse 50  //编码器2脉冲时长50ms
 #define encoderCooldown 0  //编码器冷却时间0ms
-#define PEC11pulse 50  //PEC11编码器脉冲时长50ms
-#define PEC11Cooldown 50  //PEC11编码器冷却时间50ms
 #define togglePulse 50  //拨档开关脉冲时长50ms
 #define funkyPulse 60  //摇杆开关脉冲时长60ms
 #define funkyCooldown 70  //摇杆开关冷却时间70ms
+
+#define PEC11Pulse 50  //PEC11编码器脉冲时长50ms
+#define PEC11Cooldown 70  //PEC11编码器冷却时间70ms
+#define pulseEncCD 20
+#define pulseEncDuration 50
 
 #define clutchTopDeadzone 10  //离合顶端死区10
 #define clutchBottomDeadzone 10  //离合底部死区10

@@ -160,7 +160,7 @@ void rotary2Modes(int row, int column, int fieldPlacement, int hybridPositions, 
                     Joystick.setButton(Number + Reverse, 1);
                     Joystick.setButton(Number + 1 - Reverse, 0);
                 }
-                else  //逆时针旋转时触发-1（reverse为1则为+1）
+                else if ((difference < 0 && difference > -2) || difference > 2)  //逆时针旋转时触发-1（reverse为1则为+1）
                 {
                     Joystick.setButton(Number + Reverse, 0);
                     Joystick.setButton(Number + 1 - Reverse, 1);
@@ -181,7 +181,7 @@ void rotary2Modes(int row, int column, int fieldPlacement, int hybridPositions, 
     }
 
     //开关模式3：开放式混合模式旋钮
-    if (!switchMode[Row][Column] && switchMode[Row][Column + 1])
+    else if (!switchMode[Row][Column] && switchMode[Row][Column + 1])
     {
 
         for (int i = 1; i < HyPos + 1; i++)  //按下对应档位的按钮，释放其它按钮
