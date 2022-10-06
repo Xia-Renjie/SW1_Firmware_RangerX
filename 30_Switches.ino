@@ -11,8 +11,8 @@ void loop()
 
     globalClock = millis();  //全局时钟为系统运行时间，单位毫秒
 
-    //rotaryField = 0;
-    //buttonField = 0;
+    rotaryField = 0;
+    buttonField = 0;
     matrix();
     //runningPresets();  //使用31的预设更新方式
 
