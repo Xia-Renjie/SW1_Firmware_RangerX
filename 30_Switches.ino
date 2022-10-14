@@ -40,7 +40,7 @@ void loop()
 
     pushPull(3, 3, 3, 4, 6, 6, 6, 5, 7);  //B14 B13 B27 B26 换挡拨片和功能拨片
 
-    toggle(3,5);  //T1
+    toggleM(3, 5, 5);  //T1
     toggleM(6, 3, 6);  //T2
     brakeMagic(7, 2, 4);  //T3
 

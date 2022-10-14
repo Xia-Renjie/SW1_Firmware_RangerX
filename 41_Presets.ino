@@ -38,27 +38,33 @@ void presets(int8_t presetNumber)
     {
         case 0: //预设 1 - iRacing PORSCHE 911 CUP CAR
             switchMode[5][2] = 1;
-            switchMode[6][1] = 1;
             bitePoint = 265;
             brakeMagicValue = 200;
             break;
         case 1: //预设 2 - iRacing PORSCHE 911 GT3
+            switchMode[5][2] = 1;
             bitePoint = 300;
             break;
         case 2: //预设 3 - iRacing FERRARI 488 GT3
+            switchMode[5][2] = 1;
             bitePoint = 500;
             break;
         case 3: //预设 4 - iRacing MERCEDES AMG GT3
+            switchMode[5][2] = 1;
             bitePoint = 200;
             switchMode[4][2] = 1;
             break;
         case 4: //预设 5 - iRacing F3
+            switchMode[5][2] = 1;
             break;
         case 5: //预设 6 - iRacing F4
+            switchMode[5][2] = 1;
             break;
         case 6: //预设 7 - iRacing MERCEDES W12
+            switchMode[5][2] = 1;
             break;
         case 7: //预设 8 - iRacing RADICAL SR10
+            switchMode[5][2] = 1;
             break;
         case 8: //预设 9 - ACC MERCEDES AMG GT3
             break;
