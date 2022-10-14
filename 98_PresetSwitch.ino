@@ -256,7 +256,7 @@ void presetSwitch(int row, int column, bool reverse)
 
     //推送预设值给按钮位字段
 
-    long push = 0;
+    int32_t push = 0;
     push = push | (switchPreset << 11);
     buttonField = buttonField | push;
 }

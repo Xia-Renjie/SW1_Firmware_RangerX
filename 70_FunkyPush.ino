@@ -71,7 +71,7 @@ void funkyPushM(int row, int column, int fieldPlacement, int aCol, int bCol, int
     }
 
     //推送开关模式给按钮位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | switchMode[Row][Column];
     push = push << (FieldPlacement - 1);
     buttonField = buttonField | push;

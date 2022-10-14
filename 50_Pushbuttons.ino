@@ -55,7 +55,7 @@ void pushButtonM(int8_t row, int8_t column, int8_t fieldPlacement)  //多模式�
     }
 
     //推送按钮模式的值给按钮位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | switchMode[Row][Column];
     push = push << (FieldPlacement - 1);
     buttonField = buttonField | push;

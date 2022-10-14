@@ -38,7 +38,7 @@ void quickSwitch(int8_t row, int8_t column)
     }
 
     //推送开关模式值给编码器位字段
-    long pesh = 0;
+    int32_t pesh = 0;
     pesh = pesh | switchMode[Row][Column];
     pesh = pesh << 1;
     rotaryField = rotaryField | pesh;
@@ -66,9 +66,9 @@ void quickSwitch(int8_t row, int8_t column)
         quickSwitchState = latchState[Row][Column];
     }
 
-    //传递开关激活状态给按钮位字段
-    long push = 0;
+    //传递开关激活状态给编码器位字段
+    int32_t push = 0;
     push = push | quickSwitchState;
-    push = push << 7;
-    buttonField = buttonField | push;
+    push = push << 14;
+    rotaryField = rotaryField | push;
 }

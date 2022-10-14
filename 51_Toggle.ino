@@ -94,7 +94,7 @@ void toggleM(int row, int column, int fieldPlacement)  //多模式自锁拨档�
     }
 
     //推送开关模式的值给按钮位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | switchMode[Row][Column];
     push = push << (FieldPlacement - 1);
     buttonField = buttonField | push;

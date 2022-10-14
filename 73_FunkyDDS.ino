@@ -10,7 +10,7 @@ void DDSfunky(int Arow, int Acol, int Bcol)
     {
         Number = Number + 12;
     }
-    int FieldPlacement = 8;
+    int FieldPlacement = 5;
 
     int bCol = Bcol - 1;
 
@@ -174,7 +174,7 @@ void DDSfunky(int Arow, int Acol, int Bcol)
     switchMode[Row][Column] = (toggleTimer[Row][bCol] & B00000001);
     switchMode[Row][bCol] = (toggleTimer[Row][bCol] & B00000010) >> 1;
 
-    long push = 0;
+    int32_t push = 0;
     push = push | toggleTimer[Row][bCol];
     push = push << (2 * (FieldPlacement - 1)); //注意此处位字段的位置与模式的位置不同，所有的DDS模式公用15 16位
     rotaryField = rotaryField | push;

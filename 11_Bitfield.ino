@@ -1,17 +1,17 @@
-int rotaryField = 0;
+int32_t rotaryField = 0;
 
 /*
  * 编码器位字段，值连接到switchModes[row][col], 推送给Z轴
 
  最常用
- 16 - DDS模式开关
- 15 - DDS模式开关
+ 16 - 未启用，因为Joystick库存在BUG
+ 15 - 快速切换激活
  14 - 双离合
  13 - 双离合
  12 - 咬合点设定
  11 - 咬合点设定
- 10
- 9
+ 10 - DDS开关模式
+ 9 - DDS开关模式
  8
  7
  6
@@ -27,13 +27,13 @@ int rotaryField = 0;
 
  */
 
-int buttonField = 0;
+int32_t buttonField = 0;
 
 /*
  * 按钮位字段，值连接到switchModes[row][col], 推送给Y轴
 
  最常用
- 16 - 空挡激活
+ 16 - 未启用，因为Joystick库存在BUG
  15 - 空挡模式
  14 - 预设第4位值
  13 - 预设第3位值
@@ -41,7 +41,7 @@ int buttonField = 0;
  11 - 预设第1位值
  10 - 魔法刹车激活
  9 - 油门保持激活
- 8 - 快速切换激活
+ 8 - 空挡激活
  7 - 换挡拨片模式
  6 - 左上拨档开关模式
  5 - 右上拨档开关模式

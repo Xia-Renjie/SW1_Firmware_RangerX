@@ -187,7 +187,7 @@ void rotaryLeft(int analogPin, int switchNumber, int fieldPlacement, int pos1, i
     }
 
     //传递模式值给按钮位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | analogSwitchMode1[N];
     push = push << (FieldPlacement - 1);
     buttonField = buttonField | push;

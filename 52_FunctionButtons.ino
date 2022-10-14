@@ -131,7 +131,7 @@ void neutralButton(int row, int column)
     int Column = column - 1;
     int Number = buttonNumber[Row][Column];
     int FieldPlacement = 15;
-    int ActivePlacement = 16;
+    int ActivePlacement = 8;
 
     //一般模式下状态更新函数与pushButton()功能相同
     if (pushState[Row][Column] != rawState[Row][Column] && (globalClock - switchTimer[Row][Column]) > buttonCooldown)
@@ -160,7 +160,7 @@ void neutralButton(int row, int column)
     }
 
     //推送按钮模式的值给按钮位字段，与pushButtonM()相同
-    long push = 0;
+    int32_t push = 0;
     push = push | switchMode[Row][Column];
     push = push << (FieldPlacement - 1);
     buttonField = buttonField | push;
@@ -186,7 +186,7 @@ void neutralButton(int row, int column)
         }
 
         //推送空挡激活状态的值给按钮位字段
-        long push = 0;
+        int32_t push = 0;
         push = push | latchState[Row][Column];
         push = push << (ActivePlacement - 1);
         buttonField = buttonField | push;
@@ -244,7 +244,7 @@ void biteButton(int row, int column)
         }
     }
     //推送咬合点设定位字段值(字段用法详见咬合点编码器函数)
-    long push = 0;
+    int32_t push = 0;
     push = push | biteButtonBit1;
     push = push | (biteButtonBit2 << 1);
     push = push << (2 * (FieldPlacement - 1));

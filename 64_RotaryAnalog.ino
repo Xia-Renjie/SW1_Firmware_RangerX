@@ -212,7 +212,7 @@ void rotaryAnalog(int analogPin, int switchNumber, int fieldPlacement, int hybri
     }
 
     //传递模式值给编码器位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | analogSwitchMode1[N];
     push = push | (analogSwitchMode2[N] << 1);
     push = push << (FieldPlacement - 1);
@@ -436,7 +436,7 @@ void rotaryAnalog2Mode(int analogPin, int switchNumber, int fieldPlacement, int 
     }
 
     //传递模式值给编码器位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | analogSwitchMode1[N];
     push = push << (FieldPlacement - 1);
     rotaryField = rotaryField | push;
@@ -751,7 +751,7 @@ void DDSanalog(int analogPin, int switchNumber, int pos1, int pos2, int pos3, in
 
 
     //传递模式值给编码器位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | analogSwitchMode1[N];
     push = push | (analogSwitchMode2[N] << 1);
     push = push << (2*(FieldPlacement - 1));

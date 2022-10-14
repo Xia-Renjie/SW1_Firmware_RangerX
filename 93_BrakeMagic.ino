@@ -34,7 +34,7 @@ void brakeMagic(int row, int column, int fieldPlacement)  //参数为开关行�
     }
 
     //传递开关模式值给按钮位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | switchMode[Row][Column];
     push = push << (FieldPlacement - 1);
     buttonField = buttonField | push;
@@ -63,7 +63,7 @@ void brakeMagic(int row, int column, int fieldPlacement)  //参数为开关行�
             Joystick.setBrake(brakeMagicValue);  //开关打开，将魔法刹车值赋予刹车轴
             latchState[Row][Column] = true;
 
-            long push = 1;
+            int32_t push = 1;
             push = push << 9;
             buttonField = buttonField | push;  //传递开关模式值给按钮位字段，默认在第10位
         }
@@ -74,7 +74,7 @@ void brakeMagic(int row, int column, int fieldPlacement)  //参数为开关行�
             latchState[Row][Column] = false;
             latchLock[Row][Column] = false;
 
-            long push = 0;
+            int32_t push = 0;
             push = push << 9;
             buttonField = buttonField | push;
         }

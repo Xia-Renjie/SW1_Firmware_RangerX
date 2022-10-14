@@ -198,7 +198,7 @@ void rotary4Modes(int row, int column, int fieldPlacement, int hybridPositions, 
     }
 
     //传递模式值给编码器位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | switchMode[Row][Column];
     push = push | (switchMode[Row][Column + 1] << 1);
     push = push << (FieldPlacement - 1);
@@ -514,7 +514,7 @@ void rotary4Multis(int row, int column, int fieldPlacement, int positions1, int 
     }
 
     //推送开关模式值给位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | switchMode[Row][Column];
     push = push | (switchMode[Row][Column + 1] << 1);
     push = push << (FieldPlacement - 1);
@@ -825,7 +825,7 @@ void DDS4bit(int row, int column, bool reverse)
 
 
     //传递模式值给编码器位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | switchMode[Row][Column];
     push = push | (switchMode[Row][Column + 1] << 1);
     push = push << (2*(FieldPlacement - 1));  //注意此处位字段的位置与模式的位置不同，所有的DDS模式公用15 16位

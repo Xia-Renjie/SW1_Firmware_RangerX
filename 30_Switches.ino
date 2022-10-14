@@ -40,6 +40,7 @@ void loop()
 
     pushPull(3, 3, 3, 4, 6, 6, 6, 5, 7);  //B14 B13 B27 B26 换挡拨片和功能拨片
 
+    toggle(3,5);  //T1
     toggleM(6, 3, 6);  //T2
     brakeMagic(7, 2, 4);  //T3
 
@@ -50,7 +51,7 @@ void loop()
     biteButton(1, 5);  //咬合点按钮B3
     presetButton(1, 6);  //预设按钮B4
     quickSwitch(1, 4);  //快速切换按钮B2
-    throttleHold(3, 5, 7, 4, true);  //油门保持功能开关T1 编码器E7
+    throttleHoldM(1, 3, 7, 4, true);  //油门保持功能开关B1 编码器E7
 
     //编码器
 
@@ -107,8 +108,8 @@ void loop()
 
    
 
-    Joystick.setZAxis(rotaryField - 32768);  //设置轴初始值
-    Joystick.setYAxis(buttonField - 32768);
+    Joystick.setZAxis(rotaryField - 32767);  //设置轴初始值
+    Joystick.setYAxis(buttonField - 32767);
 
     Joystick.sendState();  //发送按钮状态
 }

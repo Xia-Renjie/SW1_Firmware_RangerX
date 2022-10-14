@@ -89,7 +89,7 @@ void pushPull(int rightPullRow, int rightPullCol, int rightPushRow, int rightPus
     }
 
     //传递开关模式值给按钮位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | switchMode[RightPullRow][RightPullCol];
     push = push << (FieldPlacement - 1);
     buttonField = buttonField | push;
@@ -171,7 +171,7 @@ void pushPull(int rightPullRow, int rightPullCol, int rightPushRow, int rightPus
     }
 
     //传递手刹状态给编码器位字段
-    long pesh = 0;
+    int32_t pesh = 0;
     pesh = pesh | handbrake;
     rotaryField = rotaryField | pesh;
 }

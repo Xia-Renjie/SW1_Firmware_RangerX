@@ -226,7 +226,7 @@ void quickRotary1bite(int analogPin, int switchNumber, int fieldPlacement, int p
     }
 
     //传递模式值给编码器位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | analogSwitchMode1[N];
     push = push << (FieldPlacement - 1);
     rotaryField = rotaryField | push;
@@ -373,7 +373,7 @@ void quickRotary2(int analogPin, int switchNumber, int fieldPlacement, int pos1,
     }
 
     //传递模式值给编码器位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | analogSwitchMode1[N];
     push = push << (FieldPlacement - 1);
     rotaryField = rotaryField | push;
@@ -516,7 +516,7 @@ void quickRotary3(int analogPin, int switchNumber, int fieldPlacement, int pos1,
     }
 
     //传递模式值给编码器位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | analogSwitchMode1[N];
     push = push << (FieldPlacement - 1);
     rotaryField = rotaryField | push;
@@ -659,7 +659,7 @@ void quickRotary4(int analogPin, int switchNumber, int fieldPlacement, int pos1,
     }
 
     //传递模式值给编码器位字段
-    long push = 0;
+    int32_t push = 0;
     push = push | analogSwitchMode1[N];
     push = push << (FieldPlacement - 1);
     rotaryField = rotaryField | push;
