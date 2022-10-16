@@ -22,19 +22,18 @@ void loop()
 
     //方向盘按钮
 
+    pushButton(6, 4);  //B28 设置按钮
     pushButton(3, 1);  //B12 TOW按钮
     pushButton(3, 2);  //B11 退出按钮
 
     pushButton(1, 5);  //B3 PIT按钮
     pushButton(1, 6);  //B4 雨刷按钮
+    pushButton(1, 7);  //B5 右方向按钮
     pushButton(4, 6);  //B19 远光灯按钮
     pushButton(4, 7);  //B20 左方向按钮
 
-    pushButton(6, 4);  //B28 设置按钮
     pushButton(6, 7);  //B30 无线电按钮（自锁开关）
-
-    pushButton(1, 7);  //B5 右方向按钮
-    pushButton(7, 3);  //B29 背后按钮
+    pushButton(7, 3);  //B15 双闪按钮
 
     pushPull(3, 3, 3, 4, 6, 6, 6, 5, 7);  //B14 B13 B27 B26 换挡拨片和功能拨片
 
@@ -44,12 +43,12 @@ void loop()
 
     //特殊开关
 
-    modButton(7, 1);  //模式调整按钮B15
+    modButton(7, 1);  //模式调整按钮B29（背后按钮）
     neutralButton(4, 5);  //空挡按钮B18
     biteButton(4, 3);  //咬合点按钮B16
     presetButton(4, 4);  //预设按钮B17
     quickSwitch(1, 4);  //快速切换按钮B2
-    throttleHoldM(1, 3, 7, 4, true);  //油门保持功能开关B1 编码器E7 背后旋钮
+    throttleHoldM(1, 3, 7, 4, true);  //油门保持功能开关B1 编码器E7（背后旋钮）
 
     //编码器
 
@@ -62,8 +61,8 @@ void loop()
 
     //摇杆开关
 
-    funkyButtonDDButton(5, 4, 5, 1, 6, 7);  //B24 B方向（上） DD模式开关
-    funkyButtonHybrid(5, 6, 5, 1, 4, 7);  //B22 D_1方向（下） 混合模式开关
+    funkyButtonDDButton(5, 4, 5, 1, 6, 7);  //B24 B方向（上） DD按钮
+    funkyButtonHybrid(5, 6, 5, 1, 4, 7);  //B22 D_1方向（下） 混合按钮
     funkyButton(5, 1, 5, 4, 6, 7);  //B21 C方向（左）
     funkyButton(5, 7, 5, 1, 4, 6);  //B23 A方向（右）
     funkyPush(5, 5, 1, 4, 6, 7);  //B25 点按开关
@@ -79,14 +78,14 @@ void loop()
 
     //模拟输入
 
-    rotaryLeft(  //左旋转开关，咬合点调整和绑定一个参数调整
+    rotaryLeft(  //左旋转开关，咬合点调整和绑定一个参数进行调整
         A3,                                                           //模拟输入针脚
         1,                                                            //模拟输入编号1
         3,                                                            //编码器位字段
         16, 107, 200, 291, 383, 474, 566, 657, 749, 841, 932, 1023,   //12档读数值
         false);                                                        //旋转方向，false为顺时针
 
-    rotaryRight(  //右旋转开关，预设调整和绑定一个参数调整
+    rotaryRight(  //右旋转开关，预设调整和绑定一个参数进行调整
         A1,                                                           //模拟输入针脚
         2,                                                            //模拟输入编号2
         2,                                                            //编码器位字段
