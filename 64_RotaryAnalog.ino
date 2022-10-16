@@ -4,7 +4,7 @@
 
 //4模式模拟旋转编码器
 void rotaryAnalog(int analogPin, int switchNumber, int fieldPlacement, int hybridPositions, int pos1, int pos2, int pos3, int pos4, int pos5, int pos6, int pos7, int pos8, int pos9, int pos10, int pos11, int pos12, bool reverse)
-//参数为模拟输入针脚，按钮编号，编码器位字段，自定义档位数，1-12档位读数，是否反向旋转
+//参数为模拟输入针脚，模拟输入编号，编码器位字段，自定义档位数，1-12档位读数，是否反向旋转
 {
     int Pin = analogPin;
     int Pos1 = pos1;
@@ -221,7 +221,7 @@ void rotaryAnalog(int analogPin, int switchNumber, int fieldPlacement, int hybri
 
 //双功能4模式模拟旋转编码器
 void rotaryAnalog2Mode(int analogPin, int switchNumber, int fieldPlacement, int pos1, int pos2, int pos3, int pos4, int pos5, int pos6, int pos7, int pos8, int pos9, int pos10, int pos11, int pos12, bool reverse)
-//参数为模拟输入针脚，按钮编号，编码器位字段，1-12档位读数，是否反向旋转
+//参数为模拟输入针脚，模拟输入编号，编码器位字段，1-12档位读数，是否反向旋转
 {
     int Pin = analogPin;
     int Pos1 = pos1;
@@ -444,7 +444,7 @@ void rotaryAnalog2Mode(int analogPin, int switchNumber, int fieldPlacement, int 
 
 //DDS模式模拟编码器
 void DDSanalog(int analogPin, int switchNumber, int pos1, int pos2, int pos3, int pos4, int pos5, int pos6, int pos7, int pos8, int pos9, int pos10, int pos11, int pos12, bool reverse)
-//参数为模拟输入针脚，按钮编号，1-12档位读数，是否反向旋转
+//参数为模拟输入针脚，模拟输入编号，1-12档位读数，是否反向旋转
 {
     int Pin = analogPin;
     int Pos1 = pos1;
