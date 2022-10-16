@@ -33,7 +33,7 @@ void loop()
     pushButton(4, 7);  //B20 左方向按钮
 
     pushButton(6, 7);  //B30 无线电按钮（自锁开关）
-    pushButton(7, 3);  //B15 双闪按钮
+    pushButton(7, 1);  //B15 双闪按钮
 
     pushPull(3, 3, 3, 4, 6, 6, 6, 5, 7);  //B14 B13 B27 B26 换挡拨片和功能拨片
 
@@ -43,7 +43,7 @@ void loop()
 
     //特殊开关
 
-    modButton(7, 1);  //模式调整按钮B29（背后按钮）
+    modButton(7, 3);  //模式调整按钮B29（背后按钮）
     neutralButton(4, 5);  //空挡按钮B18
     biteButton(4, 3);  //咬合点按钮B16
     presetButton(4, 4);  //预设按钮B17
