@@ -1,6 +1,6 @@
 #include <Joystick.h>
 
-
+#define DEVICE_NAME "SW1 RangerX"  //自定义设备名称
 #define BUTTONCOUNT 97  //定义按钮编号总数97
 
 //定义Joystick函数参数
