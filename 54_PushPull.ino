@@ -158,7 +158,7 @@ void pushPull(int rightPullRow, int rightPullCol, int rightPushRow, int rightPus
         handbrakeRelease = false;  //解锁手刹释放锁
     }
 
-    if (!handbrakeRelease && pushState[RightPushRow][RightPushCol] == 1 && pushState[LeftPushRow][LeftPushCol] == 1)  //手刹已激活时左右拨片同时按下
+    if (!handbrakeRelease && pushState[RightPushRow][RightPushCol] == 1 && pushState[LeftPushRow][LeftPushCol] == 1)  //手刹已激活时左右功能拨片同时按下（即推拉式的推拨片）
     {
         handbrakeTimer = globalClock;  //更新手刹计时器
         handbrakeRelease = true;  //锁定手刹释锁

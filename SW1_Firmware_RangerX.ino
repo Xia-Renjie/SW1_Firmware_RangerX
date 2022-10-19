@@ -1,7 +1,7 @@
 #include <Joystick.h>
 
 
-#define BUTTONCOUNT 93  //定义按钮编号总数93
+#define BUTTONCOUNT 97  //定义按钮编号总数97
 
 //定义Joystick函数参数
 Joystick_ Joystick(JOYSTICK_DEFAULT_REPORT_ID, JOYSTICK_TYPE_JOYSTICK,
