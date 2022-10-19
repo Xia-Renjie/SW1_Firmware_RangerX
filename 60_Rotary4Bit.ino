@@ -98,7 +98,7 @@ void rotary4Modes(int row, int column, int fieldPlacement, int hybridPositions, 
             //如果处于模式3，更新计数器
             if (!switchMode[Row][Column] && switchMode[Row][Column + 1])
             {
-                if ((pushState[Row][Column + 1] > 0 && pushState[Row][Column + 1] < 8) || pushState[Row][Column + 1] < -8)  //顺时针旋转时计数器+1（reverse为1则为-1）
+                if ((pushState[Row][Column + 1] > 0 && pushState[Row][Column + 1] < 6) || pushState[Row][Column + 1] < -6)  //顺时针旋转时计数器+1（reverse为1则为-1）
                 {
                     pushState[Row][Column + 2] = pushState[Row][Column + 2] + 1 - (2 * Reverse);
                 }
@@ -155,7 +155,7 @@ void rotary4Modes(int row, int column, int fieldPlacement, int hybridPositions, 
         {
             if (globalClock - switchTimer[Row][Column + 1] < encoderPulse)
             {
-                if ((difference > 0 && difference < 8) || difference < -8)  //顺时针旋转时触发+1（reverse为1则为-1）
+                if ((difference > 0 && difference < 6) || difference < -6)  //顺时针旋转时触发+1（reverse为1则为-1）
                 {
                     Joystick.setButton(Number + Reverse, 1);
                     Joystick.setButton(Number + 1 - Reverse, 0);
@@ -640,7 +640,7 @@ void DDS4bit(int row, int column, bool reverse)
                 //如果处于DDS混合模式，更新计数器
                 if (!switchMode[Row][Column] && !switchMode[Row][Column + 1])
                 {
-                    if ((pushState[Row][Column + 1] > 0 && pushState[Row][Column + 1] < 8) || pushState[Row][Column + 1] < -8)
+                    if ((pushState[Row][Column + 1] > 0 && pushState[Row][Column + 1] < 6) || pushState[Row][Column + 1] < -6)
                     {
                         toggleTimer[Row][Column] = toggleTimer[Row][Column] + 1 - (2 * Reverse);
                     }
