@@ -86,7 +86,7 @@ void rotaryRight(int analogPin, int switchNumber, int fieldPlacement, int pos1, 
 
              analogLastCounter[N] = result;
 
-            if (pushState[presetButtonRow - 1][presetButtonCol - 1] == 1) //标准模式
+            if (pushState[presetButtonRow - 1][presetButtonCol - 1] == 1) //标准模式，按住preset按钮的同时旋转来切换预设
             {
                 //确定选择的预设
                 switchPreset = result;
@@ -99,7 +99,7 @@ void rotaryRight(int analogPin, int switchNumber, int fieldPlacement, int pos1, 
 
     //开关模式1：12档开关
 
-    if (!analogSwitchMode1[N] && !biteButtonBit1 && !biteButtonBit2)
+    if (!analogSwitchMode1[N] && !biteButtonBit1 && !biteButtonBit2 && !pushState[presetButtonRow - 1][presetButtonCol - 1])  //没有按下咬合点按钮和preset按钮的情况下，旋转以调整数值
     {
         analogTempState[N] = 0;
 
