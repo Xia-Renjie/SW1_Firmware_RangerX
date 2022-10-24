@@ -124,7 +124,7 @@ void rotaryRight(int analogPin, int switchNumber, int fieldPlacement, int pos1, 
 
     //开关模式2：增量编码器
 
-    else if (analogSwitchMode1[N] && !biteButtonBit1 && !biteButtonBit2)
+    else if (analogSwitchMode1[N] && !biteButtonBit1 && !biteButtonBit2 && !pushState[presetButtonRow - 1][presetButtonCol - 1])
     {
         Number = analogButtonNumberIncMode[N];
         int difference = analogTempState[N];
