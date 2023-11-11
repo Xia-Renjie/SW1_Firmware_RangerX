@@ -38,6 +38,7 @@ int8_t presetButtonCol;  //预设按钮列编号
 
 bool biteButtonBit1 = false;  //咬合点字段1
 bool biteButtonBit2 = false;  //咬合点字段2
+bool launchButtonLatch = false;  //起步按钮字段
 uint8_t first = 0;
 uint8_t second = 0;
 

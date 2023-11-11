@@ -266,3 +266,124 @@ void throttleHoldM(int8_t buttonRow, int8_t buttonCol, int8_t rotaryRow, int8_t 
     push = push << 8;
     buttonField = buttonField | push;
 }
+
+void throttleHoldSW1(int8_t buttonRow, int8_t buttonCol, int8_t rotaryRow, int8_t rotaryColA, int rotaryColB, bool reverse)
+{
+    int8_t ButtonRow = buttonRow - 1;
+    int8_t ButtonCol = buttonCol - 1;
+    int Row = rotaryRow - 1;
+    int Column = rotaryColA - 1;
+    int Number = buttonNumber[rotaryRow][rotaryColA];
+
+    int bCol = rotaryColB - 1;
+    
+    int8_t Reverse = reverse;
+
+    //按钮逻辑
+    if (pushState[ButtonRow][ButtonCol] != rawState[ButtonRow][ButtonCol] && (globalClock - switchTimer[ButtonRow][ButtonCol]) > buttonCooldown)
+    {
+        switchTimer[ButtonRow][ButtonCol] = globalClock;
+        pushState[ButtonRow][ButtonCol] = rawState[ButtonRow][ButtonCol];
+    }
+
+    if ((globalClock - switchTimer[ButtonRow][ButtonCol]) > buttonCooldown)
+    {
+        pushState[ButtonRow][ButtonCol] = rawState[ButtonRow][ButtonCol];
+    }
+
+
+    //编码器逻辑
+    if (!rawState[Row][Column] && !rawState[Row][bCol])
+    {
+        pushState[Row][Column] = 1;
+    }
+    else if (!rawState[Row][Column] && rawState[Row][bCol])
+    {
+        pushState[Row][Column] = 2;
+        latchLock[Row][Column] = 1; //Fetching 01
+    }
+    else if (rawState[Row][Column] && rawState[Row][bCol])
+    {
+        pushState[Row][Column] = 3;
+    }
+    else if (rawState[Row][Column] && !rawState[Row][bCol])
+    {
+        pushState[Row][Column] = 4;
+        latchLock[Row][bCol] = 1; //Fetching 10
+    }
+
+    if ((globalClock - switchTimer[Row][Column] > funkyCooldown) && (globalClock - switchTimer[Row][bCol] > funkyCooldown))
+    {
+        if ((latchLock[Row][bCol] && pushState[Row][Column] == 1) || (latchLock[Row][Column] && pushState[Row][Column] == 3))
+        {
+            switchTimer[Row][Column] = globalClock;
+
+            if (brakeMagicOn)
+            {
+                brakeMagicValue = brakeMagicValue + 10 - (20 * Reverse);
+            }
+            else if (pushState[ButtonRow][ButtonCol] == 1)
+            {
+                throttleHoldValue = throttleHoldValue + 10 - (20 * Reverse);
+            }
+        }
+
+        else if ((latchLock[Row][bCol] && pushState[Row][Column] == 3) || (latchLock[Row][Column] && pushState[Row][Column] == 1))
+        {
+            switchTimer[Row][bCol] = globalClock;
+            if (brakeMagicOn)
+            {
+                brakeMagicValue = brakeMagicValue - 10 + (20 * Reverse);
+            }
+            else if (pushState[ButtonRow][ButtonCol] == 1)
+            {
+                throttleHoldValue = throttleHoldValue - 10 + (20 * Reverse);
+            }
+            
+        }
+    }
+
+    else
+    {
+        latchLock[Row][bCol] = 0;
+        latchLock[Row][Column] = 0;
+    }
+    if (!brakeMagicOn && pushState[ButtonRow][ButtonCol] == 0) //魔法刹车和油门保持都没打开时，编码器为一般增减调整功能
+    {
+      Joystick.setButton(Number + Reverse, (globalClock - switchTimer[Row][Column] < funkyPulse));
+      Joystick.setButton(Number + 1 - Reverse, (globalClock - switchTimer[Row][bCol] < funkyPulse));
+    }
+
+    //数值调整 
+    if (brakeMagicValue < 0)
+    {
+      brakeMagicValue = 0;
+    }
+    else if (brakeMagicValue > 1000)
+    {
+      brakeMagicValue = 1000;
+    }
+
+    if (throttleHoldValue < 0)
+    {
+      throttleHoldValue = 0;
+    }
+    else if (throttleHoldValue > 1000)
+    {
+      throttleHoldValue = 1000;
+    }
+
+    
+    if (pushState[ButtonRow][ButtonCol] == 1)
+    {
+        Joystick.setThrottle(throttleHoldValue);
+    }
+    else
+    {
+        Joystick.setThrottle(0);
+    }
+
+    long push = pushState[ButtonRow][ButtonCol];
+    push = push << 5;
+    buttonField = buttonField | push;
+}

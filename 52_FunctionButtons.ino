@@ -253,3 +253,37 @@ void biteButton(int row, int column)
     Joystick.setRyAxis(bitePoint);  //将咬合点设定编码器的值传递给咬合点轴
     Joystick.setButton(Number, pushState[Row][Column]);  //传递按钮按下状态
 }
+
+//起步按钮，启用后，离合拨片最大值为咬合点值
+
+void launchButton(int row, int column, int switchNumberAffected)
+{
+    int Row = row - 1;
+    int Column = column - 1;
+    int Number = buttonNumber[Row][Column];
+
+    if (pushState[Row][Column] != rawState[Row][Column] && (globalClock - switchTimer[Row][Column]) > buttonCooldown)
+    {
+        switchTimer[Row][Column] = globalClock;
+        pushState[Row][Column] = rawState[Row][Column];
+    }
+
+    if ((globalClock - switchTimer[Row][Column]) > buttonCooldown)
+    {
+        pushState[Row][Column] = rawState[Row][Column];
+    }
+
+    if (!analogLatchLock[switchNumberAffected - 1] && pushState[Row][Column] == 1) //空档按钮没有按下时才能启用
+    {
+        launchButtonLatch = true;
+    }
+    else if (analogLatchLock[switchNumberAffected - 1])
+    {
+        launchButtonLatch = false;
+    }
+    if (!launchButtonLatch) //空档按下时功能为普通按钮
+    {
+        Joystick.setButton(Number, pushState[Row][Column]);
+    }
+
+}
