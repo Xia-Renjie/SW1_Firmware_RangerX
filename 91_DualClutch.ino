@@ -59,7 +59,7 @@ void dualClutch(int masterPin, int masterSwitchNumber, int masterReleasedValue, 
         average[M] = 1000;
     }
 
-    Serial.println(average[M]);  //本句用于调试时输出当前读数
+    //Serial.println(average[M]);  //本句用于调试时输出当前读数
 
     //--------------------------------
     //---------从拨片读数计算----------
@@ -114,7 +114,7 @@ void dualClutch(int masterPin, int masterSwitchNumber, int masterReleasedValue, 
         average[S] = 1000;
     }
     
-    Serial.println(slaveNormalized);  //本句用于调试时输出当前读数
+    //Serial.println(slaveNormalized);  //本句用于调试时输出当前读数
 
     //------------------------
     //--------模式切换--------
@@ -267,6 +267,7 @@ void filteredDualClutch(int masterPin, int masterSwitchNumber, int masterRelease
     //--------------------------------
     int inputPin = masterPin;
     int masterRaw = analogRead(inputPin);
+    //Serial.println(masterRaw);  //本句用于调试时输出当前读数
     int M = masterSwitchNumber - 1;
     float masterNormalized = 0;
     float MasterFullyPressedValue = curveFilter(masterFullyPressedValue, masterReleasedValue, masterFullyPressedValue, masterCurvePush, masterExpFactor);
@@ -319,6 +320,7 @@ void filteredDualClutch(int masterPin, int masterSwitchNumber, int masterRelease
 
     int SlavePin = slavePin;
     int slaveRaw = analogRead(SlavePin);
+    //Serial.println(slaveRaw);  //本句用于调试时输出当前读数
     int S = slaveSwitchNumber - 1;
     float slaveNormalized = 0;
 
