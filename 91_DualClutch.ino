@@ -267,7 +267,8 @@ void filteredDualClutch(int masterPin, int masterSwitchNumber, int masterRelease
     //--------------------------------
     int inputPin = masterPin;
     int masterRaw = analogRead(inputPin);
-    //Serial.println(masterRaw);  //本句用于调试时输出当前读数
+    Serial.println((String)"masterRaw : " + masterRaw); //显示主离合原始值
+    Serial.println("");
     int M = masterSwitchNumber - 1;
     float masterNormalized = 0;
     float MasterFullyPressedValue = curveFilter(masterFullyPressedValue, masterReleasedValue, masterFullyPressedValue, masterCurvePush, masterExpFactor);
@@ -313,6 +314,8 @@ void filteredDualClutch(int masterPin, int masterSwitchNumber, int masterRelease
     {
         average[M] = 1000;
     }
+    Serial.println((String)"master_average : " + average[M]); //显示主离合滤波值
+    Serial.println("");
 
     //--------------------------------
     //---------从离合滤波计算----------
@@ -320,7 +323,8 @@ void filteredDualClutch(int masterPin, int masterSwitchNumber, int masterRelease
 
     int SlavePin = slavePin;
     int slaveRaw = analogRead(SlavePin);
-    //Serial.println(slaveRaw);  //本句用于调试时输出当前读数
+    Serial.println((String)"slaveRaw : " + slaveRaw); //显示主离合原始值
+    Serial.println("");
     int S = slaveSwitchNumber - 1;
     float slaveNormalized = 0;
 
@@ -367,6 +371,8 @@ void filteredDualClutch(int masterPin, int masterSwitchNumber, int masterRelease
     {
         average[S] = 1000;
     }
+    Serial.println((String)"slave_average : " + average[S]); //显示从离合滤波值
+    Serial.println("");
 
     //------------------------------------------
     //-------通过咬合点按钮设置咬合点离合值--------
