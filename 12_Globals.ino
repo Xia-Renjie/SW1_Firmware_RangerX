@@ -42,7 +42,7 @@ uint8_t first = 0;
 uint8_t second = 0;
 
 int8_t switchPreset = 0;  //开关预设，默认为0
-bool bootPreset = true;  //启动预设，默认启用
+bool bootPreset = false;  //启动预设，不启用
 
 //时钟与计数器
 unsigned long globalClock;  //全局时钟
