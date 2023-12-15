@@ -43,7 +43,7 @@ uint8_t first = 0;
 uint8_t second = 0;
 
 int8_t switchPreset = 0;  //开关预设，默认为0
-bool bootPreset = false;  //启动预设，不启用
+bool bootPreset = true;  //启动预设为预设旋钮当前值
 
 //时钟与计数器
 unsigned long globalClock;  //全局时钟
@@ -66,5 +66,5 @@ unsigned long globalClock;  //全局时钟
 #define pulseEncCD 20
 #define pulseEncDuration 50
 
-#define clutchTopDeadzone 10  //离合顶端死区10
-#define clutchBottomDeadzone 10  //离合底部死区10
+#define clutchTopDeadzone 50  //离合顶端死区50
+#define clutchBottomDeadzone 50  //离合底部死区50

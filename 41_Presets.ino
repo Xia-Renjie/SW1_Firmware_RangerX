@@ -29,7 +29,6 @@ void presets(int8_t presetNumber)
     throttleHoldValue = 1000;
     leftQuickValue = 11; //左12档开关快速切换到12
     rightQuickValue = 11; //右12档开关快速切换到12
-    switchMode[3][3] = 1; //默认拨片为独立模式
     analogSwitchMode2[2] = 1; //默认离合模式3，分离单离合，同时按下后激活双离合
 
     //----------------------------------------
